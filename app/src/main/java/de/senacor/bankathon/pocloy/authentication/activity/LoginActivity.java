@@ -97,6 +97,7 @@ public class LoginActivity extends AppCompatActivity {
                 protected void handleSuccessfulAuthentication() {
                     startActivity(QrCodeTestActivity.createIntent(getApplicationContext(), null));
                     showProgress(false);
+                    finish();
                 }
 
                 @Override
