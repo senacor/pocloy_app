@@ -25,6 +25,15 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import org.springframework.util.StringUtils;
+
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
@@ -43,6 +52,8 @@ public class RedeemStickersFragment extends Fragment {
     @BindView(R.id.redeem_vouchers_table)
     TableLayout redeemVouchersTable;
 
+    private List<VoucherRedeemingData> previousTableRows;
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -58,6 +69,22 @@ public class RedeemStickersFragment extends Fragment {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 Log.d("onTextChanged", String.format("s = %s, start = %d, before = %d, count = %d", s, start, before, count));
+                List<VoucherRedeemingData> tableRows = DataHolder.getVoucherRedeemingData();
+                if (StringUtils.hasLength(s)) {
+                    tableRows = tableRows
+                            .stream()
+                            .filter(entry -> {
+                                String voucherName = entry.getName().toLowerCase();
+                                String filter = s.toString().toLowerCase();
+                                return voucherName.contains(filter);
+                            })
+                            .collect(Collectors.toList());
+                }
+                if (!Objects.equals(previousTableRows, tableRows)) {
+                    redeemVouchersTable.removeAllViews();
+                    buildTable(tableRows);
+                    previousTableRows = tableRows;
+                }
             }
 
             @Override
@@ -73,13 +100,19 @@ public class RedeemStickersFragment extends Fragment {
             }
         });
 
-        DataHolder.getVoucherRedeemingData()
-                .stream()
-                .map(this::createTableRow)
-                .forEach(redeemVouchersTable::addView);
+        previousTableRows = DataHolder.getVoucherRedeemingData();
+        buildTable(previousTableRows);
 
         return view;
     }
+
+    private void buildTable(List<VoucherRedeemingData> data) {
+        data
+                .stream()
+                .map(this::createTableRow)
+                .forEach(redeemVouchersTable::addView);
+    }
+
 
     @NonNull
     private TableRow createTableRow(VoucherRedeemingData voucherRedeemingData) {

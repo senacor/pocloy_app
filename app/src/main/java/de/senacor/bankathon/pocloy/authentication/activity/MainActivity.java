@@ -3,7 +3,6 @@ package de.senacor.bankathon.pocloy.authentication.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -24,13 +23,15 @@ import java.util.Optional;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
+import de.senacor.bankathon.pocloy.authentication.dto.UserVoucher;
 import de.senacor.bankathon.pocloy.authentication.dto.VoucherRedeemingData;
-import de.senacor.bankathon.pocloy.authentication.fragments.QrCodeFragment;
+import de.senacor.bankathon.pocloy.authentication.fragments.ShowVouchersFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.RedeemStickersFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.TradeStickersFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.UnwrapStickersFragment;
 import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
 import de.senacor.bankathon.pocloy.authentication.task.LoadAvailableVouchersTask;
+import de.senacor.bankathon.pocloy.authentication.task.LoadMyVouchersTask;
 
 import static de.senacor.bankathon.pocloy.authentication.fragments.MyCollectionFragment.createMyCollectionFragment;
 
@@ -76,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         loadAvailableVouchers();
+        loadOwnVouchers();
         super.onPostCreate(savedInstanceState);
     }
 
@@ -123,11 +125,11 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_trade:
                 toolbar.setTitle(R.string.nav_trade);
                 return Optional.of(new TradeStickersFragment());
-            case R.id.nav_qrcode:
+            case R.id.nav_show_vouchers:
                 toolbar.setTitle(R.string.nav_qrcode);
-                QrCodeFragment qrCodeFragment = new QrCodeFragment();
-                qrCodeFragment.setArguments(QrCodeFragment.createBundle());
-                return Optional.of(qrCodeFragment);
+                ShowVouchersFragment showVouchersFragment = new ShowVouchersFragment();
+                showVouchersFragment.setArguments(ShowVouchersFragment.createBundle());
+                return Optional.of(showVouchersFragment);
             case R.id.nav_unwrap_stickers:
                 toolbar.setTitle(R.string.nav_unwrap_stickers);
                 return Optional.of(new UnwrapStickersFragment());
@@ -162,5 +164,23 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         loadAvailableVouchersTask.execute((Void) null);
+    }
+
+    private void loadOwnVouchers() {
+        LoadMyVouchersTask loadMyVouchersTask = new LoadMyVouchersTask() {
+
+            @Override
+            protected void handleSuccessfulRetrieval(List<UserVoucher> result) {
+                // Breakpoints hier führen zum Absturz. -_-
+                DataHolder.setUserVouchers(result);
+            }
+
+            @Override
+            protected void handleFailedRetrieval() {
+                Toast toast = Toast.makeText(getApplicationContext(), "Own vouchers could not be loaded", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        };
+        loadMyVouchersTask.execute((Void) null);
     }
 }

@@ -19,7 +19,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
 
-public class QrCodeFragment extends Fragment {
+public class ShowVouchersFragment extends Fragment {
 
     private static final String QR_CODES_TO_RENDER = "qrCodes";
 
@@ -35,7 +35,7 @@ public class QrCodeFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        View inflate = inflater.inflate(R.layout.fragment_qrcode, container, false);
+        View inflate = inflater.inflate(R.layout.fragment_show_vouchers, container, false);
         ButterKnife.bind(this, inflate);
 
         this.qrCodesToRender = getArguments().getStringArrayList(QR_CODES_TO_RENDER);
