@@ -1,6 +1,8 @@
 package de.senacor.bankathon.pocloy.authentication.task;
 
 import android.os.AsyncTask;
+import android.util.Log;
+
 import org.springframework.web.client.RestTemplate;
 import de.senacor.bankathon.pocloy.authentication.dto.Credentials;
 
@@ -18,13 +20,17 @@ public class AuthenticationTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected final Void doInBackground(Void... params) {
-        restTemplate.postForObject(uri, credentials, Void.class);
+        try {
+            restTemplate.postForObject(uri, credentials, Void.class);
+        } catch (IllegalArgumentException e) {
+            Log.e("AuthenticationTask", e.getMessage());
+        }
         return null;
     }
 
     @Override
     protected final void onPostExecute(Void result) {
-        System.out.println("AuthenticationTask.onPostExecute");
+        Log.d("AuthenticationTask", "AuthenticationTask.onPostExecute");
     }
 
     @Override
