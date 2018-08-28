@@ -2,13 +2,16 @@ package de.senacor.bankathon.pocloy.authentication.task;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.HttpStatusCodeException;
 
 import java.util.Arrays;
 import java.util.List;
+
 import de.senacor.bankathon.pocloy.authentication.dto.Credentials;
 import de.senacor.bankathon.pocloy.authentication.dto.UserAssets;
 import de.senacor.bankathon.pocloy.authentication.framework.GsonRestTemplate;
@@ -34,7 +37,7 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<User
                 Log.d("AuthenticationTask.doInBackground", "Login successfull");
                 GsonRestTemplate.setCredentials(credentials);
                 Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
-                String jsonList =  restTemplate.postForObject(transactionUri, credentials, String.class);
+                String jsonList = restTemplate.postForObject(transactionUri, credentials, String.class);
                 UserAssets[] userAssets = gson.fromJson(jsonList, UserAssets[].class);
                 return Arrays.asList(userAssets);
             } else {
@@ -43,9 +46,9 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<User
             }
         } catch (Exception e) {
             this.authenticationException = e;
-            if (e instanceof HttpServerErrorException) {
-                HttpServerErrorException httpServerErrorException = (HttpServerErrorException) e;
-                Log.e("AuthenticationTask.doInBackground", httpServerErrorException.getResponseBodyAsString(), httpServerErrorException);
+            if (e instanceof HttpStatusCodeException) {
+                HttpStatusCodeException httpStatusCodeException = (HttpStatusCodeException) e;
+                Log.e("AuthenticationTask.doInBackground", httpStatusCodeException.getResponseBodyAsString(), httpStatusCodeException);
             } else {
                 Log.e("AuthenticationTask.doInBackground", e.getMessage(), e);
             }
@@ -54,7 +57,7 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<User
     }
 
     @Override
-    protected final void onPostExecute(List<UserAssets>  result) {
+    protected final void onPostExecute(List<UserAssets> result) {
         if (authenticationException == null) {
             handleSuccessfulAuthentication(result);
         } else {
