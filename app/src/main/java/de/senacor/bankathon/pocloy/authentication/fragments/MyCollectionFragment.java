@@ -15,8 +15,9 @@ public class MyCollectionFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        ButterKnife.bind(container);
-        return inflater.inflate(R.layout.fragment_collection, container, false);
+        View view = inflater.inflate(R.layout.fragment_collection, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
 }

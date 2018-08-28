@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d("MainActivity", "MainActivity onCreate called");
 
+        initializeFirstFragment();
+
         navigationView.setNavigationItemSelectedListener(menuItem -> {
             menuItem.setChecked(true);
             mainLayout.closeDrawers();
@@ -59,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         });
+    }
+
+    private void initializeFirstFragment() {
+        withFragmentTransaction(fragmentTransaction ->
+                fragmentTransaction.add(R.id.content_frame, new MyCollectionFragment()));
     }
 
     @Override
@@ -77,6 +84,7 @@ public class MainActivity extends AppCompatActivity {
         if (actionbar != null) {
             actionbar.setDisplayHomeAsUpEnabled(true);
             actionbar.setHomeAsUpIndicator(R.drawable.menu);
+            actionbar.setTitle(R.string.nav_my_collection);
         }
     }
 
@@ -86,16 +94,20 @@ public class MainActivity extends AppCompatActivity {
 
     private Optional<Fragment> determineFragmentToShow(int menuItemId) {
         switch (menuItemId) {
+            case R.id.nav_collection:
+                toolbar.setTitle(R.string.nav_my_collection);
+                return Optional.of(new MyCollectionFragment());
+            case R.id.nav_redeem:
+                toolbar.setTitle(R.string.nav_redeem);
+                return Optional.of(new RedeemStickersFragment());
+            case R.id.nav_trade:
+                toolbar.setTitle(R.string.nav_trade);
+                return Optional.of(new TradeStickersFragment());
             case R.id.nav_qrcode:
+                toolbar.setTitle(R.string.nav_qrcode);
                 QrCodeFragment qrCodeFragment = new QrCodeFragment();
                 qrCodeFragment.setArguments(QrCodeFragment.createBundle());
                 return Optional.of(qrCodeFragment);
-            case R.id.nav_collection:
-                return Optional.of(new MyCollectionFragment());
-            case R.id.nav_redeem:
-                return Optional.of(new RedeemStickersFragment());
-            case R.id.nav_trade:
-                return Optional.of(new TradeStickersFragment());
         }
         return Optional.empty();
     }
