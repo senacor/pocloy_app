@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.Arrays;
@@ -46,6 +47,9 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<User
             if (e instanceof HttpServerErrorException) {
                 HttpServerErrorException httpServerErrorException = (HttpServerErrorException) e;
                 Log.e("AuthenticationTask.doInBackground", httpServerErrorException.getResponseBodyAsString(), httpServerErrorException);
+            } else if (e instanceof HttpClientErrorException) {
+                HttpClientErrorException httpClientErrorException = (HttpClientErrorException) e;
+                Log.e("AuthenticationTask.doInBackground", httpClientErrorException.getResponseBodyAsString(), httpClientErrorException);
             } else {
                 Log.e("AuthenticationTask.doInBackground", e.getMessage(), e);
             }
