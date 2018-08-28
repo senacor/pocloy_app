@@ -26,13 +26,12 @@ import de.senacor.bankathon.pocloy.authentication.fragments.RedeemStickersFragme
 import de.senacor.bankathon.pocloy.authentication.fragments.TradeStickersFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.UnwrapStickersFragment;
 
-import static de.senacor.bankathon.pocloy.authentication.fragments.MyCollectionFragment.createMockStickerData;
 import static de.senacor.bankathon.pocloy.authentication.fragments.MyCollectionFragment.createMyCollectionFragment;
 
 public class MainActivity extends AppCompatActivity {
     //TODO: 
-    // unwarap stickers 
-    
+    // unwrap stickers
+
     @BindView(R.id.main_layout)
     DrawerLayout mainLayout;
 
@@ -72,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         withFragmentTransaction(fragmentTransaction ->
                 fragmentTransaction.add(
                         R.id.content_frame,
-                        createMyCollectionFragment(createMockStickerData())
+                        createMyCollectionFragment()
                 )
         );
     }
@@ -105,7 +104,7 @@ public class MainActivity extends AppCompatActivity {
         switch (menuItemId) {
             case R.id.nav_collection:
                 toolbar.setTitle(R.string.nav_my_collection);
-                return Optional.of(createMyCollectionFragment(createMockStickerData()));
+                return Optional.of(createMyCollectionFragment());
             case R.id.nav_redeem:
                 toolbar.setTitle(R.string.nav_redeem);
                 return Optional.of(new RedeemStickersFragment());

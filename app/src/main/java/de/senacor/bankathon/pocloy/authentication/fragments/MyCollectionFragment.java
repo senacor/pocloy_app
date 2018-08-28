@@ -15,7 +15,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -27,6 +26,9 @@ import java.util.stream.Collectors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
+import de.senacor.bankathon.pocloy.authentication.dto.StickerData;
+import de.senacor.bankathon.pocloy.authentication.dto.UserAssets;
+import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
 
 public class MyCollectionFragment extends Fragment {
 
@@ -95,34 +97,27 @@ public class MyCollectionFragment extends Fragment {
 
 
     /**
-     * Factory method which creates an instance of {@link MyCollectionFragment} with the given sticker data.
+     * Factory method which creates an instance of {@link MyCollectionFragment} with from
+     * {@link DataHolder#getUserAssets()}.
      *
-     * @param stickerData to be displayed
      * @return a new instance of {@link MyCollectionFragment}
      */
     @NonNull
-    public static MyCollectionFragment createMyCollectionFragment(List<StickerData> stickerData) {
+    public static MyCollectionFragment createMyCollectionFragment() {
+        List<StickerData> stickerData = DataHolder.getUserAssets()
+                .stream()
+                .collect(Collectors.toMap(
+                        UserAssets::getContent,
+                        userAsset -> 1,
+                        Integer::sum
+                )).entrySet()
+                .stream()
+                .map(entry -> new StickerData(entry.getValue(), entry.getKey()))
+                .collect(Collectors.toList());
+
         MyCollectionFragment fragment = new MyCollectionFragment();
         fragment.setArguments(createBundle(stickerData));
         return fragment;
-    }
-
-    @Deprecated
-    public static List<StickerData> createMockStickerData() {
-        return Arrays.asList(
-                new StickerData(4, "bottle_wine"),
-                new StickerData(1, "car_hatchback"),
-                new StickerData(2, "cup"),
-                new StickerData(10, "food_apple"),
-                new StickerData(6, "food"),
-                new StickerData(4, "gas_station"),
-                new StickerData(3, "pizza"),
-                new StickerData(7, "hamburger"),
-                new StickerData(8, "silverware_fork_knife"),
-                new StickerData(2, "sunglasses"),
-                new StickerData(12, "white_balance_sunny"),
-                new StickerData(4, "unknown")
-        );
     }
 
     private class ViewHolder {
