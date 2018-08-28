@@ -15,8 +15,9 @@ import de.senacor.bankathon.pocloy.authentication.framework.GsonRestTemplate;
 
 public abstract class LoadAvailableVouchersTask extends AsyncTask<Void, Void, List<VoucherRedeemingData>> {
 
+    private static final String AVAILABLE_VOUCHERS_URI = "https://desolate-depths-64341.herokuapp.com/merchant/vouchers";
+
     private final GsonRestTemplate restTemplate;
-    private String availableVouchersUri = "https://desolate-depths-64341.herokuapp.com/merchant/vouchers";
 
     public LoadAvailableVouchersTask() {
         this.restTemplate = new GsonRestTemplate();
@@ -26,7 +27,7 @@ public abstract class LoadAvailableVouchersTask extends AsyncTask<Void, Void, Li
     protected List<VoucherRedeemingData> doInBackground(Void... voids) {
         try {
             ResponseEntity<List<VoucherRedeemingData>> response = restTemplate.exchange(
-                    availableVouchersUri,
+                    AVAILABLE_VOUCHERS_URI,
                     HttpMethod.GET,
                     null,
                     new ParameterizedTypeReference<List<VoucherRedeemingData>>() {
