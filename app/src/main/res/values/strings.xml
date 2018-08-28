@@ -21,4 +21,9 @@
 
     <!-- Strings related to redeeming vouchers -->
     <string name="redeem_vouchers_filter">Search for vouchers</string>
+
+    <!-- Strings related to using vouchers -->
+    <string name="exchange_voucher">Scan this voucher</string>
+    <string name="exchange_voucher_ok">OK</string>
+
 </resources>

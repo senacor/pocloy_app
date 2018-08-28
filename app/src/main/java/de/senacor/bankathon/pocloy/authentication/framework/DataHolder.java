@@ -10,7 +10,7 @@ import de.senacor.bankathon.pocloy.authentication.dto.VoucherRedeemingData;
 public class DataHolder {
     private static List<UserAssets> userAssets = Collections.emptyList();
     private static List<VoucherRedeemingData> voucherRedeemingData = Collections.emptyList();
-    private static List<UserVoucher> userVouchers;
+    private static List<UserVoucher> userVouchers = Collections.emptyList();
 
     public static List<UserAssets> getUserAssets() {
         return userAssets;

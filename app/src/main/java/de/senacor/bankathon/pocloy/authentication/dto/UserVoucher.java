@@ -3,25 +3,25 @@ package de.senacor.bankathon.pocloy.authentication.dto;
 public class UserVoucher {
 
     private final long id;
-    private final int voucherId;
-    private final String voucherName;
+    private final int voucherTypeId;
+    private final String voucherTypeName;
 
-    public UserVoucher(long id, int voucherId, String voucherName) {
+    public UserVoucher(long id, int voucherTypeId, String voucherTypeName) {
         this.id = id;
-        this.voucherId = voucherId;
-        this.voucherName = voucherName;
+        this.voucherTypeId = voucherTypeId;
+        this.voucherTypeName = voucherTypeName;
     }
 
     public long getId() {
         return id;
     }
 
-    public int getVoucherId() {
-        return voucherId;
+    public int getVoucherTypeId() {
+        return voucherTypeId;
     }
 
-    public String getVoucherName() {
-        return voucherName;
+    public String getVoucherTypeName() {
+        return voucherTypeName;
     }
 
 }

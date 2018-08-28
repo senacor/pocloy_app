@@ -113,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
                     imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                     showProgress(false);
-                    Toast toast = Toast.makeText(getApplicationContext(), "Der Login ist fehlgeschlafen", Toast.LENGTH_LONG);
+                    Toast toast = Toast.makeText(getApplicationContext(), "Der Login ist fehlgeschlagen", Toast.LENGTH_LONG);
                     toast.show();
                 }
             };
