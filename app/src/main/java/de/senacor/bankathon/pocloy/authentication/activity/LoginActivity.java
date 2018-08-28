@@ -3,15 +3,18 @@ package de.senacor.bankathon.pocloy.authentication.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
@@ -102,7 +105,11 @@ public class LoginActivity extends AppCompatActivity {
 
                 @Override
                 protected void handleFailedAuthentication() {
+                    InputMethodManager imm = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+                    imm.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0);
                     showProgress(false);
+                    Toast toast = Toast.makeText(getApplicationContext(), "Der Login ist fehlgeschlafen", Toast.LENGTH_LONG);
+                    toast.show();
                 }
             };
             authenticationTask.execute((Void) null);
