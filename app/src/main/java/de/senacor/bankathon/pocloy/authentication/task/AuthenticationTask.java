@@ -5,6 +5,8 @@ import android.util.Log;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpServerErrorException;
+
 import java.util.Arrays;
 import java.util.List;
 import de.senacor.bankathon.pocloy.authentication.dto.Credentials;
@@ -41,7 +43,12 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<User
             }
         } catch (Exception e) {
             this.authenticationException = e;
-            Log.d("AuthenticationTask.doInBackground", e.getMessage(), e);
+            if (e instanceof HttpServerErrorException) {
+                HttpServerErrorException httpServerErrorException = (HttpServerErrorException) e;
+                Log.e("AuthenticationTask.doInBackground", httpServerErrorException.getResponseBodyAsString(), httpServerErrorException);
+            } else {
+                Log.e("AuthenticationTask.doInBackground", e.getMessage(), e);
+            }
         }
         return null;
     }

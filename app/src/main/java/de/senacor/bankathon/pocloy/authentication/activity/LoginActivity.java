@@ -102,7 +102,6 @@ public class LoginActivity extends AppCompatActivity {
             authenticationTask = new AuthenticationTask(email, password) {
                 @Override
                 protected void handleSuccessfulAuthentication(List<UserAssets> result) {
-                    Log.d("LoginActivity", "Sending intent to open other Activity");
                     DataHolder.setUserAssets(result);
                     startActivity(MainActivity.createIntent(getApplicationContext()));
                     showProgress(false);
