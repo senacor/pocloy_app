@@ -20,6 +20,7 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
+import de.senacor.bankathon.pocloy.authentication.dto.UserAssetsList;
 import de.senacor.bankathon.pocloy.authentication.task.AuthenticationTask;
 
 public class LoginActivity extends AppCompatActivity {
@@ -99,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(true);
             authenticationTask = new AuthenticationTask(email, password) {
                 @Override
-                protected void handleSuccessfulAuthentication() {
+                protected void handleSuccessfulAuthentication(UserAssetsList result) {
                     Log.d("LoginActivity", "Sending intent to open other Activity");
                     startActivity(MainActivity.createIntent(getApplicationContext()));
                     showProgress(false);

@@ -2,18 +2,16 @@ package de.senacor.bankathon.pocloy.authentication.task;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
 import org.springframework.http.ResponseEntity;
-
 import de.senacor.bankathon.pocloy.authentication.dto.Credentials;
 import de.senacor.bankathon.pocloy.authentication.dto.UserAssetsList;
 import de.senacor.bankathon.pocloy.authentication.framework.GsonRestTemplate;
 
-public abstract class AuthenticationTask extends AsyncTask<Void, Void, Void> {
+public abstract class AuthenticationTask extends AsyncTask<Void, Void, UserAssetsList> {
     private final Credentials credentials;
     private final GsonRestTemplate restTemplate;
-    //TODO: Specify
-    private final String uri = "https://desolate-depths-64341.herokuapp.com/user/login";
+    private final String loginUri = "https://desolate-depths-64341.herokuapp.com/user/login";
+    private final String transactionUri = "https://desolate-depths-64341.herokuapp.com/user/transactions";
     private Exception authenticationException;
 
     public AuthenticationTask(String email, String password) {
@@ -23,15 +21,16 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected final Void doInBackground(Void... params) {
+    protected final UserAssetsList doInBackground(Void... params) {
         try {
-            ResponseEntity<Void> responseEntity = restTemplate.postForEntity(uri, credentials, Void.class);
-            // TODO Save credentials
-
-            if (responseEntity.getStatusCode().is2xxSuccessful())
+            ResponseEntity<Void> responseEntity = restTemplate.postForEntity(loginUri, credentials, Void.class);
+            if (responseEntity.getStatusCode().is2xxSuccessful()) {
                 Log.d("AuthenticationTask.doInBackground", "Login successfull");
-            else
+                return restTemplate.postForObject(transactionUri, credentials, UserAssetsList.class);
+            } else {
                 Log.d("AuthenticationTask.doInBackground", "Login failed");
+                this.authenticationException = new IllegalArgumentException("Was not 200");
+            }
         } catch (Exception e) {
             this.authenticationException = e;
             Log.d("AuthenticationTask.doInBackground", e.getMessage(), e);
@@ -40,9 +39,9 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected final void onPostExecute(Void result) {
+    protected final void onPostExecute(UserAssetsList result) {
         if (authenticationException == null) {
-            handleSuccessfulAuthentication();
+            handleSuccessfulAuthentication(result);
         } else {
             handleFailedAuthentication();
         }
@@ -53,7 +52,7 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, Void> {
         Log.d("AuthenticationTask", "AuthenticationTask.onCancelled");
     }
 
-    protected abstract void handleSuccessfulAuthentication();
+    protected abstract void handleSuccessfulAuthentication(UserAssetsList result);
 
     protected abstract void handleFailedAuthentication();
 }
