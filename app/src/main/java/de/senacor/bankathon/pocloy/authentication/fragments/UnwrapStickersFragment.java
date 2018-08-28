@@ -35,8 +35,8 @@ public class UnwrapStickersFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         this.userAssets = DataHolder.getUserAssets();
-        this.userAssets = new LinkedList<>();
         UserAssets userAsset = new UserAssets();
+        this.userAssets = new LinkedList<>();
         userAssets.add(userAsset);
         userAssets.add(userAsset);
         userAssets.add(userAsset);
@@ -50,25 +50,51 @@ public class UnwrapStickersFragment extends Fragment {
     private void initializeGiftView() {
         if (userAssets.size() == 4) {
             firstSticker.setVisibility(View.VISIBLE);
+            firstSticker.setOnClickListener(createOnClickListener());
+            
             secondSticker.setVisibility(View.VISIBLE);
+            secondSticker.setOnClickListener(createOnClickListener());
+            
             thirdSticker.setVisibility(View.VISIBLE);
+            thirdSticker.setOnClickListener(createOnClickListener());
+            
             fourthSticker.setVisibility(View.VISIBLE);
+            fourthSticker.setOnClickListener(createOnClickListener());
         }
 
         if (userAssets.size() == 3) {
             firstSticker.setVisibility(View.VISIBLE);
+            firstSticker.setOnClickListener(createOnClickListener());
+            
             secondSticker.setVisibility(View.VISIBLE);
+            secondSticker.setOnClickListener(createOnClickListener());
+            
             thirdSticker.setVisibility(View.VISIBLE);
+            thirdSticker.setOnClickListener(createOnClickListener());
         }
 
         if (userAssets.size() == 2) {
             firstSticker.setVisibility(View.VISIBLE);
+            firstSticker.setOnClickListener(createOnClickListener());
+            
             secondSticker.setVisibility(View.VISIBLE);
+            secondSticker.setOnClickListener(createOnClickListener());
         }
 
         if (userAssets.size() == 1) {
             firstSticker.setVisibility(View.VISIBLE);
+            firstSticker.setOnClickListener(createOnClickListener());
         }
+    }
+    
+    private View.OnClickListener createOnClickListener(){
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                System.out.println("fasfdsaf");
+                //TODO: Call backend
+            }
+        };
     }
 
 }
