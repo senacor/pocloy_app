@@ -3,7 +3,6 @@ package de.senacor.bankathon.pocloy.authentication.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -96,7 +95,7 @@ public class LoginActivity extends AppCompatActivity {
             authenticationTask = new AuthenticationTask(email, password) {
                 @Override
                 protected void handleSuccessfulAuthentication() {
-                    startActivity(new Intent(getApplicationContext(), QrCodeTestActivity.class));
+                    startActivity(QrCodeTestActivity.createIntent(getApplicationContext(), null));
                     showProgress(false);
                 }
 
