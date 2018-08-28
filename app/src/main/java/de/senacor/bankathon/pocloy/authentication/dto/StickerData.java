@@ -2,11 +2,6 @@ package de.senacor.bankathon.pocloy.authentication.dto;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
-
-import java.util.stream.Stream;
-
-import de.senacor.bankathon.pocloy.R;
 
 public class StickerData implements Parcelable {
 
@@ -40,11 +35,11 @@ public class StickerData implements Parcelable {
     }
 
     public String getStickerName() {
-        return stickerResources.imageCode;
+        return stickerResources.getImageCode();
     }
 
     public int getStickerId() {
-        return stickerResources.imageReference;
+        return stickerResources.getImageReference();
     }
 
     @Override
@@ -55,40 +50,7 @@ public class StickerData implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(amount);
-        dest.writeString(stickerResources.imageCode);
+        dest.writeString(stickerResources.getImageCode());
     }
 
-    private enum StickerResources {
-        BOTTLE("bottle_wine", R.drawable.sticker_bottle_wine),
-        CAR("car_hatchback", R.drawable.sticker_car_hatchback),
-        CUP("cup", R.drawable.sticker_cup),
-        FOOD("food", R.drawable.sticker_food),
-        APPLE("food_apple", R.drawable.sticker_food_apple),
-        GAS_STATION("gas_station", R.drawable.sticker_gas_station),
-        HAMBURGER("hamburger", R.drawable.sticker_hamburger),
-        PIZZA("pizza", R.drawable.sticker_pizza),
-        SILVERWARE("silverware_fork_knife", R.drawable.sticker_silverware_fork_knife),
-        SUNGLASSES("sunglasses", R.drawable.sticker_sunglasses),
-        SUN("white_balance_sunny", R.drawable.sticker_white_balance_sunny),
-        UNKNOWN("unknown", R.drawable.gift),
-        OTHER(null, R.drawable.sticker_alert_circle_outline);
-
-        private String imageCode;
-        private int imageReference;
-
-        StickerResources(String imageCode, int imageReference) {
-            this.imageCode = imageCode;
-            this.imageReference = imageReference;
-        }
-
-        static StickerResources forImageCode(String imageCode) {
-            return Stream.of(values())
-                    .filter(stickerName -> stickerName.imageCode.equals(imageCode))
-                    .findFirst()
-                    .orElseGet(() -> {
-                        Log.e("MyCollectionFragment", "Unknown sticker " + imageCode);
-                        return OTHER;
-                    });
-        }
-    }
 }

@@ -3,6 +3,7 @@ package de.senacor.bankathon.pocloy.authentication.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -15,16 +16,21 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import java.util.List;
 import java.util.Optional;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
+import de.senacor.bankathon.pocloy.authentication.dto.VoucherRedeemingData;
 import de.senacor.bankathon.pocloy.authentication.fragments.QrCodeFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.RedeemStickersFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.TradeStickersFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.UnwrapStickersFragment;
+import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
+import de.senacor.bankathon.pocloy.authentication.task.LoadAvailableVouchersTask;
 
 import static de.senacor.bankathon.pocloy.authentication.fragments.MyCollectionFragment.createMyCollectionFragment;
 
@@ -65,6 +71,12 @@ public class MainActivity extends AppCompatActivity {
 
             return true;
         });
+    }
+
+    @Override
+    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
+        loadAvailableVouchers();
+        super.onPostCreate(savedInstanceState);
     }
 
     private void initializeFirstFragment() {
@@ -133,5 +145,22 @@ public class MainActivity extends AppCompatActivity {
     @FunctionalInterface
     private interface FragmentTransactionAction {
         void apply(FragmentTransaction fragmentTransaction);
+    }
+
+    private void loadAvailableVouchers() {
+        LoadAvailableVouchersTask loadAvailableVouchersTask = new LoadAvailableVouchersTask() {
+
+            @Override
+            protected void handleSuccessfulRetrieval(List<VoucherRedeemingData> result) {
+                DataHolder.setVoucherRedeemingData(result);
+            }
+
+            @Override
+            protected void handleFailedRetrieval() {
+                Toast toast = Toast.makeText(getApplicationContext(), "Available vouchers could not be loaded", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        };
+        loadAvailableVouchersTask.execute((Void) null);
     }
 }
