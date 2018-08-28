@@ -97,11 +97,12 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 protected void handleSuccessfulAuthentication() {
                     startActivity(new Intent(getApplicationContext(), QrCodeTestActivity.class));
+                    showProgress(false);
                 }
 
                 @Override
                 protected void handleFailedAuthentication() {
-
+                    showProgress(false);
                 }
             };
             authenticationTask.execute((Void) null);
