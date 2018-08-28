@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBar;
@@ -13,9 +16,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import java.util.Optional;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
+import de.senacor.bankathon.pocloy.authentication.fragments.MyCollectionFragment;
+import de.senacor.bankathon.pocloy.authentication.fragments.QrCodeFragment;
+import de.senacor.bankathon.pocloy.authentication.fragments.RedeemStickersFragment;
+import de.senacor.bankathon.pocloy.authentication.fragments.TradeStickersFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -43,8 +52,10 @@ public class MainActivity extends AppCompatActivity {
 
             Log.d("MainActivity", "Switching navigation item");
 
-            // TODO Add code here to update the UI based on the item selected
-            // For example, swap UI fragments here
+            withFragmentTransaction(fragmentTransaction ->
+                    determineFragmentToShow(menuItem.getItemId())
+                            .ifPresent(fragment -> fragmentTransaction.replace(R.id.content_frame, fragment))
+            );
 
             return true;
         });
@@ -71,5 +82,33 @@ public class MainActivity extends AppCompatActivity {
 
     public static Intent createIntent(Context context) {
         return new Intent(context, MainActivity.class);
+    }
+
+    private Optional<Fragment> determineFragmentToShow(int menuItemId) {
+        switch (menuItemId) {
+            case R.id.nav_qrcode:
+                QrCodeFragment qrCodeFragment = new QrCodeFragment();
+                qrCodeFragment.setArguments(QrCodeFragment.createBundle());
+                return Optional.of(qrCodeFragment);
+            case R.id.nav_collection:
+                return Optional.of(new MyCollectionFragment());
+            case R.id.nav_redeem:
+                return Optional.of(new RedeemStickersFragment());
+            case R.id.nav_trade:
+                return Optional.of(new TradeStickersFragment());
+        }
+        return Optional.empty();
+    }
+
+    private void withFragmentTransaction(FragmentTransactionAction action) {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        action.apply(fragmentTransaction);
+        fragmentTransaction.commit();
+    }
+
+    @FunctionalInterface
+    private interface FragmentTransactionAction {
+        void apply(FragmentTransaction fragmentTransaction);
     }
 }
