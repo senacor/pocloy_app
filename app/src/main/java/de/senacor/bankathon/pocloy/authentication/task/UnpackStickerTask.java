@@ -3,12 +3,14 @@ package de.senacor.bankathon.pocloy.authentication.task;
 import android.os.AsyncTask;
 import android.util.Log;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import org.springframework.web.client.HttpServerErrorException;
 import de.senacor.bankathon.pocloy.authentication.dto.Credentials;
 import de.senacor.bankathon.pocloy.authentication.dto.UnpackStickerRequest;
-import de.senacor.bankathon.pocloy.authentication.dto.UserAssets;
+import de.senacor.bankathon.pocloy.authentication.dto.UnpackedSticker;
 import de.senacor.bankathon.pocloy.authentication.framework.GsonRestTemplate;
 
-public abstract class UnpackStickerTask extends AsyncTask<Void, Void, Void> {
+public abstract class UnpackStickerTask extends AsyncTask<Void, Void, UnpackedSticker> {
     private final Credentials credentials;
     private final GsonRestTemplate restTemplate;
     private final UnpackStickerRequest unpackStickerRequest;
@@ -22,25 +24,26 @@ public abstract class UnpackStickerTask extends AsyncTask<Void, Void, Void> {
     }
 
     @Override
-    protected final Void doInBackground(Void... params) {
+    protected final UnpackedSticker doInBackground(Void... params) {
         try {
             String jsonList = restTemplate.postForObject(unpackStickerContentUri, unpackStickerRequest, String.class);
-            Gson gson = new Gson();
-            UserAssets[] userAssets = gson.fromJson(jsonList, UserAssets[].class);
-            return null;
-        } catch (Exception e) {
+            Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
+            UnpackedSticker unpackedSticker = gson.fromJson(jsonList, UnpackedSticker.class);
+            return unpackedSticker;
+        } catch (HttpServerErrorException e) {
+            String reason = e.getResponseBodyAsString();
             this.unpackStickerException = e;
-            Log.d("AuthenticationTask.doInBackground", e.getMessage(), e);
+            Log.d("UnpackStickerTask.doInBackground", e.getMessage(), e);
         }
         return null;
     }
 
     @Override
-    protected final void onPostExecute(Void result) {
+    protected final void onPostExecute(UnpackedSticker result) {
         if (unpackStickerException == null) {
-            handleSuccessfulAuthentication();
+            handleSuccessfulUnpackOfSticker(result);
         } else {
-            handleFailedAuthentication();
+            handleFailedUnpackOfSticker();
         }
     }
 
@@ -49,7 +52,7 @@ public abstract class UnpackStickerTask extends AsyncTask<Void, Void, Void> {
         Log.d("AuthenticationTask", "AuthenticationTask.onCancelled");
     }
 
-    protected abstract void handleSuccessfulAuthentication();
+    protected abstract void handleSuccessfulUnpackOfSticker(UnpackedSticker unpackedSticker);
 
-    protected abstract void handleFailedAuthentication();
+    protected abstract void handleFailedUnpackOfSticker();
 }

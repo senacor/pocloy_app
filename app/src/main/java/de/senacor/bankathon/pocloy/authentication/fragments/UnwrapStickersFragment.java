@@ -7,13 +7,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import java.util.LinkedList;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
+import de.senacor.bankathon.pocloy.authentication.dto.UnpackedSticker;
 import de.senacor.bankathon.pocloy.authentication.dto.UserAssets;
 import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
+import de.senacor.bankathon.pocloy.authentication.task.UnpackStickerTask;
 
 public class UnwrapStickersFragment extends Fragment {
     @BindView(R.id.sticker1)
@@ -35,13 +36,7 @@ public class UnwrapStickersFragment extends Fragment {
         ButterKnife.bind(this, view);
 
         this.userAssets = DataHolder.getUserAssets();
-        UserAssets userAsset = new UserAssets();
-        this.userAssets = new LinkedList<>();
-        userAssets.add(userAsset);
-        userAssets.add(userAsset);
-        userAssets.add(userAsset);
-        userAssets.add(userAsset);
-
+        
         initializeGiftView();
 
         return view;
@@ -50,49 +45,59 @@ public class UnwrapStickersFragment extends Fragment {
     private void initializeGiftView() {
         if (userAssets.size() == 4) {
             firstSticker.setVisibility(View.VISIBLE);
-            firstSticker.setOnClickListener(createOnClickListener());
+            firstSticker.setOnClickListener(createOnClickListener(userAssets.get(0).getCodeId()));
             
             secondSticker.setVisibility(View.VISIBLE);
-            secondSticker.setOnClickListener(createOnClickListener());
+            secondSticker.setOnClickListener(createOnClickListener(userAssets.get(1).getCodeId()));
             
             thirdSticker.setVisibility(View.VISIBLE);
-            thirdSticker.setOnClickListener(createOnClickListener());
+            thirdSticker.setOnClickListener(createOnClickListener(userAssets.get(2).getCodeId()));
             
             fourthSticker.setVisibility(View.VISIBLE);
-            fourthSticker.setOnClickListener(createOnClickListener());
+            fourthSticker.setOnClickListener(createOnClickListener(userAssets.get(3).getCodeId()));
         }
 
         if (userAssets.size() == 3) {
             firstSticker.setVisibility(View.VISIBLE);
-            firstSticker.setOnClickListener(createOnClickListener());
+            firstSticker.setOnClickListener(createOnClickListener(userAssets.get(0).getCodeId()));
             
             secondSticker.setVisibility(View.VISIBLE);
-            secondSticker.setOnClickListener(createOnClickListener());
+            secondSticker.setOnClickListener(createOnClickListener(userAssets.get(1).getCodeId()));
             
             thirdSticker.setVisibility(View.VISIBLE);
-            thirdSticker.setOnClickListener(createOnClickListener());
+            thirdSticker.setOnClickListener(createOnClickListener(userAssets.get(2).getCodeId()));
         }
 
         if (userAssets.size() == 2) {
             firstSticker.setVisibility(View.VISIBLE);
-            firstSticker.setOnClickListener(createOnClickListener());
+            firstSticker.setOnClickListener(createOnClickListener(userAssets.get(0).getCodeId()));
             
             secondSticker.setVisibility(View.VISIBLE);
-            secondSticker.setOnClickListener(createOnClickListener());
+            secondSticker.setOnClickListener(createOnClickListener(userAssets.get(1).getCodeId()));
         }
 
         if (userAssets.size() == 1) {
             firstSticker.setVisibility(View.VISIBLE);
-            firstSticker.setOnClickListener(createOnClickListener());
+            firstSticker.setOnClickListener(createOnClickListener(userAssets.get(0).getCodeId()));
         }
     }
     
-    private View.OnClickListener createOnClickListener(){
+    private View.OnClickListener createOnClickListener(String codeId){
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("fasfdsaf");
-                //TODO: Call backend
+                UnpackStickerTask unpackStickerTask = new UnpackStickerTask(codeId) {
+                    @Override
+                    protected void handleSuccessfulUnpackOfSticker(UnpackedSticker result) {
+                        System.out.println("");
+                    }
+
+                    @Override
+                    protected void handleFailedUnpackOfSticker() {
+                        System.out.println("");
+                    }
+                };
+                unpackStickerTask.execute();
             }
         };
     }
