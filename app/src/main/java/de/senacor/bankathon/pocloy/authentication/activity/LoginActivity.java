@@ -3,6 +3,7 @@ package de.senacor.bankathon.pocloy.authentication.activity;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
@@ -39,7 +39,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        // Set up the login form.
 
         mPasswordView.setOnEditorActionListener((textView, id, keyEvent) -> {
             if (id == EditorInfo.IME_ACTION_DONE || id == EditorInfo.IME_NULL) {
@@ -94,7 +93,17 @@ public class LoginActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            authenticationTask = new AuthenticationTask(email, password);
+            authenticationTask = new AuthenticationTask(email, password) {
+                @Override
+                protected void handleSuccessfulAuthentication() {
+                    startActivity(new Intent(getApplicationContext(), QrCodeTestActivity.class));
+                }
+
+                @Override
+                protected void handleFailedAuthentication() {
+
+                }
+            };
             authenticationTask.execute((Void) null);
         }
     }
