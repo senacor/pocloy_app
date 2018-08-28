@@ -48,9 +48,9 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<User
             this.authenticationException = e;
             if (e instanceof HttpStatusCodeException) {
                 HttpStatusCodeException httpStatusCodeException = (HttpStatusCodeException) e;
-                Log.e("AuthenticationTask.doInBackground", httpStatusCodeException.getResponseBodyAsString(), httpStatusCodeException);
+                Log.e("AuthenticationTask.doInBackground", "Body: " + httpStatusCodeException.getResponseBodyAsString(), httpStatusCodeException);
             } else {
-                Log.e("AuthenticationTask.doInBackground", e.getMessage(), e);
+                Log.e("AuthenticationTask.doInBackground", "Message: " + e.getMessage(), e);
             }
         }
         return null;
