@@ -6,6 +6,7 @@ import android.util.Log;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.HttpServerErrorException;
 
 import java.util.List;
 
@@ -35,7 +36,12 @@ public abstract class LoadAvailableVouchersTask extends AsyncTask<Void, Void, Li
                 return response.getBody();
             }
         } catch (Exception e) {
-            Log.e("LoadAvailableVouchersTask", "Exception thrown while retrieving available vouchers", e);
+            if (e instanceof HttpServerErrorException) {
+                HttpServerErrorException httpServerErrorException = (HttpServerErrorException) e;
+                Log.e("LoadAvailableVouchersTask", httpServerErrorException.getResponseBodyAsString(), httpServerErrorException);
+            } else {
+                Log.e("LoadAvailableVouchersTask", "Exception thrown while retrieving available vouchers: " + e.getMessage(), e);
+            }
         }
         return null;
     }
