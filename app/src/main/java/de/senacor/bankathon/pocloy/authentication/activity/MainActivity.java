@@ -25,9 +25,12 @@ import de.senacor.bankathon.pocloy.authentication.fragments.MyCollectionFragment
 import de.senacor.bankathon.pocloy.authentication.fragments.QrCodeFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.RedeemStickersFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.TradeStickersFragment;
+import de.senacor.bankathon.pocloy.authentication.fragments.UnwrapStickersFragment;
 
 public class MainActivity extends AppCompatActivity {
-
+    //TODO: 
+    // unwarap stickers 
+    
     @BindView(R.id.main_layout)
     DrawerLayout mainLayout;
 
@@ -108,6 +111,9 @@ public class MainActivity extends AppCompatActivity {
                 QrCodeFragment qrCodeFragment = new QrCodeFragment();
                 qrCodeFragment.setArguments(QrCodeFragment.createBundle());
                 return Optional.of(qrCodeFragment);
+            case R.id.nav_unwrap_stickers:
+                toolbar.setTitle(R.string.nav_unwrap_stickers);
+                return Optional.of(new UnwrapStickersFragment());
         }
         return Optional.empty();
     }

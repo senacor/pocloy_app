@@ -21,6 +21,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
 import de.senacor.bankathon.pocloy.authentication.dto.UserAssets;
+import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
 import de.senacor.bankathon.pocloy.authentication.task.AuthenticationTask;
 
 public class LoginActivity extends AppCompatActivity {
@@ -102,6 +103,7 @@ public class LoginActivity extends AppCompatActivity {
                 @Override
                 protected void handleSuccessfulAuthentication(List<UserAssets> result) {
                     Log.d("LoginActivity", "Sending intent to open other Activity");
+                    DataHolder.setUserAssets(result);
                     startActivity(MainActivity.createIntent(getApplicationContext()));
                     showProgress(false);
                     finish();

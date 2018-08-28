@@ -17,4 +17,5 @@
     <string name="nav_redeem">Redeem stickers</string>
     <string name="nav_trade">Trade stickers</string>
     <string name="nav_qrcode">Display QR Codes</string>
+    <string name="nav_unwrap_stickers">Unwrap stickers</string>
 </resources>
