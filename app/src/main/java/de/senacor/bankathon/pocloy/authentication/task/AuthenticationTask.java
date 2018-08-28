@@ -2,19 +2,18 @@ package de.senacor.bankathon.pocloy.authentication.task;
 
 import android.os.AsyncTask;
 import android.util.Log;
-
-import org.springframework.web.client.RestTemplate;
 import de.senacor.bankathon.pocloy.authentication.dto.Credentials;
+import de.senacor.bankathon.pocloy.authentication.framework.GsonRestTemplate;
 
 public class AuthenticationTask extends AsyncTask<Void, Void, Void> {
     private final Credentials credentials;
-    private final RestTemplate restTemplate;
+    private final GsonRestTemplate restTemplate;
     //TODO: Specify
-    private final String uri = "TheUriForRegistration";
+    private final String uri = "https://de.wikipedia.org/wiki/";
 
     public AuthenticationTask(String email, String password) {
         this.credentials = new Credentials(email, password);
-        this.restTemplate = new RestTemplate();
+        this.restTemplate = new GsonRestTemplate();
         
     }
 
@@ -22,9 +21,10 @@ public class AuthenticationTask extends AsyncTask<Void, Void, Void> {
     protected final Void doInBackground(Void... params) {
         try {
             restTemplate.postForObject(uri, credentials, Void.class);
-        } catch (IllegalArgumentException e) {
+        } catch (Exception e) {
             Log.e("AuthenticationTask", e.getMessage());
         }
+        restTemplate.postForObject(uri, credentials, Void.class);
         return null;
     }
 
@@ -35,6 +35,6 @@ public class AuthenticationTask extends AsyncTask<Void, Void, Void> {
 
     @Override
     protected final void onCancelled() {
-        System.out.println("Test");
+        Log.d("AuthenticationTask", "AuthenticationTask.onCancelled");
     }
 }
