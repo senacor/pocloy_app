@@ -3,7 +3,54 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent">
-    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content"
-    android:text="Here the stickers are gonna be displayed"/>
+    
+
+    <RelativeLayout android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginLeft="25dp">
+
+        <ImageView
+                android:id="@+id/sticker1"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/gift"
+                android:visibility="invisible"
+                android:layout_marginRight="30dp"/>
+
+        <ImageView
+                android:id="@+id/sticker2"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/gift"
+                android:visibility="invisible"
+                android:layout_toRightOf="@id/sticker1"/>
+
+        <ImageView
+                android:id="@+id/sticker3"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/gift"
+                android:visibility="invisible"
+                android:layout_below="@id/sticker1"
+                android:layout_marginRight="30dp"/>
+
+        <ImageView
+                android:id="@+id/sticker4"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
+                android:src="@drawable/gift"
+                android:visibility="invisible"
+                android:layout_below="@id/sticker2"
+                android:layout_toRightOf="@id/sticker3"/>
+
+    </RelativeLayout>
+
+    <Button
+            android:id="@+id/unwrap_all_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:text="Unwrap all" />
 
 </LinearLayout>
