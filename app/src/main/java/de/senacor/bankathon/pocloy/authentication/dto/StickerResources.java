@@ -5,6 +5,7 @@ import android.util.Log;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import de.senacor.bankathon.pocloy.R;
@@ -53,9 +54,9 @@ public enum StickerResources {
         return imageReference;
     }
 
-    static StickerResources forImageCode(String imageCode) {
+    public static StickerResources forImageCode(String imageCode) {
         return Stream.of(values())
-                .filter(stickerName -> stickerName.imageCode.equals(imageCode))
+                .filter(stickerName -> Objects.equals(stickerName.imageCode, imageCode))
                 .findFirst()
                 .orElseGet(() -> {
                     Log.e("MyCollectionFragment", "Unknown sticker " + imageCode);

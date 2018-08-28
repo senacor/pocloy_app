@@ -16,6 +16,7 @@ public abstract class UnpackStickerTask extends AsyncTask<Void, Void, UnpackedSt
     private final UnpackStickerRequest unpackStickerRequest;
     private final String unpackStickerContentUri = "https://desolate-depths-64341.herokuapp.com/user/unpack";
     private Exception unpackStickerException;
+    private String reason;
 
     public UnpackStickerTask(String codeId) {
         this.credentials = GsonRestTemplate.getCredentials();
@@ -33,6 +34,7 @@ public abstract class UnpackStickerTask extends AsyncTask<Void, Void, UnpackedSt
         } catch (HttpServerErrorException e) {
             String reason = e.getResponseBodyAsString();
             this.unpackStickerException = e;
+            this.reason = reason;
             Log.d("UnpackStickerTask.doInBackground", e.getMessage(), e);
         }
         return null;
@@ -43,7 +45,7 @@ public abstract class UnpackStickerTask extends AsyncTask<Void, Void, UnpackedSt
         if (unpackStickerException == null) {
             handleSuccessfulUnpackOfSticker(result);
         } else {
-            handleFailedUnpackOfSticker();
+            handleFailedUnpackOfSticker(reason);
         }
     }
 
@@ -54,5 +56,5 @@ public abstract class UnpackStickerTask extends AsyncTask<Void, Void, UnpackedSt
 
     protected abstract void handleSuccessfulUnpackOfSticker(UnpackedSticker unpackedSticker);
 
-    protected abstract void handleFailedUnpackOfSticker();
+    protected abstract void handleFailedUnpackOfSticker(String reason);
 }
