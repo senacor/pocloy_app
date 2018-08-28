@@ -21,11 +21,13 @@ import java.util.Optional;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
-import de.senacor.bankathon.pocloy.authentication.fragments.MyCollectionFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.QrCodeFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.RedeemStickersFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.TradeStickersFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.UnwrapStickersFragment;
+
+import static de.senacor.bankathon.pocloy.authentication.fragments.MyCollectionFragment.createMockStickerData;
+import static de.senacor.bankathon.pocloy.authentication.fragments.MyCollectionFragment.createMyCollectionFragment;
 
 public class MainActivity extends AppCompatActivity {
     //TODO: 
@@ -68,7 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
     private void initializeFirstFragment() {
         withFragmentTransaction(fragmentTransaction ->
-                fragmentTransaction.add(R.id.content_frame, new MyCollectionFragment()));
+                fragmentTransaction.add(
+                        R.id.content_frame,
+                        createMyCollectionFragment(createMockStickerData())
+                )
+        );
     }
 
     @Override
@@ -99,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         switch (menuItemId) {
             case R.id.nav_collection:
                 toolbar.setTitle(R.string.nav_my_collection);
-                return Optional.of(new MyCollectionFragment());
+                return Optional.of(createMyCollectionFragment(createMockStickerData()));
             case R.id.nav_redeem:
                 toolbar.setTitle(R.string.nav_redeem);
                 return Optional.of(new RedeemStickersFragment());
