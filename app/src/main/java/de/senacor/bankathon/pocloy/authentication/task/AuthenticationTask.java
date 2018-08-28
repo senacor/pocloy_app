@@ -11,7 +11,7 @@ import de.senacor.bankathon.pocloy.authentication.dto.Credentials;
 import de.senacor.bankathon.pocloy.authentication.dto.UserAssets;
 import de.senacor.bankathon.pocloy.authentication.framework.GsonRestTemplate;
 
-public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<UserAssets> > {
+public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<UserAssets>> {
     private final Credentials credentials;
     private final GsonRestTemplate restTemplate;
     private final String loginUri = "https://desolate-depths-64341.herokuapp.com/user/login";
