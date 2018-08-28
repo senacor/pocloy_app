@@ -53,45 +53,7 @@ public class RedeemStickersFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_redeem, container, false);
         ButterKnife.bind(this, view);
 
-        redeemVouchersFilter.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                // do nothing
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                Log.d("onTextChanged", String.format("s = %s, start = %d, before = %d, count = %d", s, start, before, count));
-                List<VoucherRedeemingData> tableRows = DataHolder.getVoucherRedeemingData();
-                if (StringUtils.hasLength(s)) {
-                    tableRows = tableRows
-                            .stream()
-                            .filter(entry -> {
-                                String voucherName = entry.getName().toLowerCase();
-                                String filter = s.toString().toLowerCase();
-                                return voucherName.contains(filter);
-                            })
-                            .collect(Collectors.toList());
-                }
-                if (!Objects.equals(previousTableRows, tableRows)) {
-                    redeemVouchersTable.removeAllViews();
-                    buildTable(tableRows);
-                    previousTableRows = tableRows;
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                InputFilter noWhitespaceFilter = (source, start, end, dest, dstart, dend) ->
-                        (source == null)
-                                ? null
-                                : source.toString().replaceAll("\\W", "");
-                s.setFilters(new InputFilter[]{
-                        noWhitespaceFilter,
-                        new InputFilter.LengthFilter(30)
-                });
-            }
-        });
+        redeemVouchersFilter.addTextChangedListener(new FilterWatcher());
 
         previousTableRows = DataHolder.getVoucherRedeemingData();
         buildTable(previousTableRows);
@@ -105,7 +67,6 @@ public class RedeemStickersFragment extends Fragment {
                 .map(this::createTableRow)
                 .forEach(redeemVouchersTable::addView);
     }
-
 
     @NonNull
     private TableRow createTableRow(VoucherRedeemingData voucherRedeemingData) {
@@ -154,4 +115,42 @@ public class RedeemStickersFragment extends Fragment {
         return price;
     }
 
+    private class FilterWatcher implements TextWatcher {
+        @Override
+        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            // do nothing
+        }
+
+        @Override
+        public void onTextChanged(CharSequence s, int start, int before, int count) {
+            List<VoucherRedeemingData> tableRows = DataHolder.getVoucherRedeemingData();
+            if (StringUtils.hasLength(s)) {
+                tableRows = tableRows
+                        .stream()
+                        .filter(entry -> {
+                            String voucherName = entry.getName().toLowerCase();
+                            String filter = s.toString().toLowerCase();
+                            return voucherName.contains(filter);
+                        })
+                        .collect(Collectors.toList());
+            }
+            if (!Objects.equals(previousTableRows, tableRows)) {
+                redeemVouchersTable.removeAllViews();
+                buildTable(tableRows);
+                previousTableRows = tableRows;
+            }
+        }
+
+        @Override
+        public void afterTextChanged(Editable s) {
+            InputFilter noWhitespaceFilter = (source, start, end, dest, dstart, dend) ->
+                    (source == null)
+                            ? null
+                            : source.toString().replaceAll("\\W", "");
+            s.setFilters(new InputFilter[]{
+                    noWhitespaceFilter,
+                    new InputFilter.LengthFilter(30)
+            });
+        }
+    }
 }

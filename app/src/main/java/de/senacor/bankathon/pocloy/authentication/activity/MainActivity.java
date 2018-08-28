@@ -128,7 +128,6 @@ public class MainActivity extends AppCompatActivity {
             case R.id.nav_show_vouchers:
                 toolbar.setTitle(R.string.nav_qrcode);
                 ShowVouchersFragment showVouchersFragment = new ShowVouchersFragment();
-                showVouchersFragment.setArguments(ShowVouchersFragment.createBundle());
                 return Optional.of(showVouchersFragment);
             case R.id.nav_unwrap_stickers:
                 toolbar.setTitle(R.string.nav_unwrap_stickers);
