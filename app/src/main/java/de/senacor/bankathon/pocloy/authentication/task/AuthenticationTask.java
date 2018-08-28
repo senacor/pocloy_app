@@ -20,11 +20,10 @@ public class AuthenticationTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected final Void doInBackground(Void... params) {
         try {
-            restTemplate.postForObject(uri, credentials, Void.class);
+            String test = restTemplate.postForObject(uri, credentials, String.class);
         } catch (Exception e) {
             Log.e("AuthenticationTask", e.getMessage());
         }
-        String test = restTemplate.postForObject(uri, credentials, String.class);
         return null;
     }
 
