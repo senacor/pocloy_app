@@ -39,4 +39,14 @@ public class UserAssets {
     public void setPaymentDate(Date paymentDate) {
         this.paymentDate = paymentDate;
     }
+
+    @Override
+    public String toString() {
+        return "UserAssets{" +
+                "loyaltyCode='" + loyaltyCode + '\'' +
+                ", status='" + status + '\'' +
+                ", content='" + content + '\'' +
+                ", paymentDate=" + paymentDate +
+                '}';
+    }
 }

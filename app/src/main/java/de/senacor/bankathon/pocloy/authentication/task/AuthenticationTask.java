@@ -2,6 +2,9 @@ package de.senacor.bankathon.pocloy.authentication.task;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
+import org.springframework.http.ResponseEntity;
+
 import de.senacor.bankathon.pocloy.authentication.dto.Credentials;
 import de.senacor.bankathon.pocloy.authentication.dto.UserAssetsList;
 import de.senacor.bankathon.pocloy.authentication.framework.GsonRestTemplate;
@@ -22,9 +25,16 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, Void> {
     @Override
     protected final Void doInBackground(Void... params) {
         try {
-           UserAssetsList userAssetsList = restTemplate.postForObject(uri, credentials, UserAssetsList.class);
+            ResponseEntity<Void> responseEntity = restTemplate.postForEntity(uri, credentials, Void.class);
+            // TODO Save credentials
+
+            if (responseEntity.getStatusCode().is2xxSuccessful())
+                Log.d("AuthenticationTask.doInBackground", "Login successfull");
+            else
+                Log.d("AuthenticationTask.doInBackground", "Login failed");
         } catch (Exception e) {
             this.authenticationException = e;
+            Log.d("AuthenticationTask.doInBackground", e.getMessage(), e);
         }
         return null;
     }
