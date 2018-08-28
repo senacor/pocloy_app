@@ -17,10 +17,11 @@ import de.senacor.bankathon.pocloy.authentication.dto.UserAssets;
 import de.senacor.bankathon.pocloy.authentication.framework.GsonRestTemplate;
 
 public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<UserAssets>> {
+    private static final String LOGIN_URI = "https://desolate-depths-64341.herokuapp.com/user/login";
+    private static final String TRANSACTION_URI = "https://desolate-depths-64341.herokuapp.com/user/transactions";
+
     private final Credentials credentials;
     private final GsonRestTemplate restTemplate;
-    private final String loginUri = "https://desolate-depths-64341.herokuapp.com/user/login";
-    private final String transactionUri = "https://desolate-depths-64341.herokuapp.com/user/transactions";
     private Exception authenticationException;
 
     public AuthenticationTask(String email, String password) {
@@ -32,12 +33,12 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<User
     @Override
     protected final List<UserAssets> doInBackground(Void... params) {
         try {
-            ResponseEntity<Void> responseEntity = restTemplate.postForEntity(loginUri, credentials, Void.class);
+            ResponseEntity<Void> responseEntity = restTemplate.postForEntity(LOGIN_URI, credentials, Void.class);
             if (responseEntity.getStatusCode().is2xxSuccessful()) {
                 Log.d("AuthenticationTask.doInBackground", "Login successfull");
                 GsonRestTemplate.setCredentials(credentials);
                 Gson gson = new GsonBuilder().setDateFormat("dd-MM-yyyy HH:mm:ss").create();
-                String jsonList = restTemplate.postForObject(transactionUri, credentials, String.class);
+                String jsonList = restTemplate.postForObject(TRANSACTION_URI, credentials, String.class);
                 UserAssets[] userAssets = gson.fromJson(jsonList, UserAssets[].class);
                 return Arrays.asList(userAssets);
             } else {
