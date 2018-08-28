@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_collection"
+            android:icon="@drawable/cards_outline"
+            android:title="@string/nav_my_collection"
+            />
+        <item
+            android:id="@+id/nav_redeem"
+            android:icon="@drawable/wallet_giftcard"
+            android:title="@string/nav_redeem"
+            />
+        <item
+            android:id="@+id/nav_trade"
+            android:icon="@drawable/swap_horizontal"
+            android:title="@string/nav_trade"
+            />
+        <item
+            android:id="@+id/nav_qrcode"
+            android:icon="@drawable/qrcode"
+            android:title="@string/nav_qrcode"
+            />
+    </group>
+</menu>

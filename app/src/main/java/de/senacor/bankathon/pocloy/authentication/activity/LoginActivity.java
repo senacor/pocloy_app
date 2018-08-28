@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -15,6 +16,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
@@ -98,7 +100,8 @@ public class LoginActivity extends AppCompatActivity {
             authenticationTask = new AuthenticationTask(email, password) {
                 @Override
                 protected void handleSuccessfulAuthentication() {
-                    startActivity(QrCodeTestActivity.createIntent(getApplicationContext(), null));
+                    Log.d("LoginActivity", "Sending intent to open other Activity");
+                    startActivity(MainActivity.createIntent(getApplicationContext()));
                     showProgress(false);
                     finish();
                 }
