@@ -9,7 +9,7 @@ public class AuthenticationTask extends AsyncTask<Void, Void, Void> {
     private final Credentials credentials;
     private final GsonRestTemplate restTemplate;
     //TODO: Specify
-    private final String uri = "https://de.wikipedia.org/wiki/";
+    private final String uri = "http://echo.jsontest.com/key/value/one/two";
 
     public AuthenticationTask(String email, String password) {
         this.credentials = new Credentials(email, password);
@@ -24,7 +24,7 @@ public class AuthenticationTask extends AsyncTask<Void, Void, Void> {
         } catch (Exception e) {
             Log.e("AuthenticationTask", e.getMessage());
         }
-        restTemplate.postForObject(uri, credentials, Void.class);
+        String test = restTemplate.postForObject(uri, credentials, String.class);
         return null;
     }
 
