@@ -3,18 +3,22 @@ package de.senacor.bankathon.pocloy.authentication.dto;
 import java.util.Date;
 
 public class UserAssets {
-    private String loyaltyCode;
+    //uuid 
+    private String codeId;
     private String status;
+    //sticker 
     private String content;
     private Date paymentDate;
 
     public String getLoyaltyCode() {
-        return loyaltyCode;
+        return codeId;
     }
 
-    public void setLoyaltyCode(String loyaltyCode) {
-        this.loyaltyCode = loyaltyCode;
+    public void setCodeId(String codeId) {
+        this.codeId = codeId;
     }
+
+    public String getCodeId() { return codeId; }
 
     public String getStatus() {
         return status;
@@ -43,7 +47,7 @@ public class UserAssets {
     @Override
     public String toString() {
         return "UserAssets{" +
-                "loyaltyCode='" + loyaltyCode + '\'' +
+                "loyaltyCode='" + codeId + '\'' +
                 ", status='" + status + '\'' +
                 ", content='" + content + '\'' +
                 ", paymentDate=" + paymentDate +
