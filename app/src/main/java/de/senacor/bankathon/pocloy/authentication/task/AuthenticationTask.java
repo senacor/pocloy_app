@@ -26,6 +26,7 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, UserAsset
             ResponseEntity<Void> responseEntity = restTemplate.postForEntity(loginUri, credentials, Void.class);
             if (responseEntity.getStatusCode().is2xxSuccessful()) {
                 Log.d("AuthenticationTask.doInBackground", "Login successfull");
+                GsonRestTemplate.setCredentials(credentials);
                 return restTemplate.postForObject(transactionUri, credentials, UserAssetsList.class);
             } else {
                 Log.d("AuthenticationTask.doInBackground", "Login failed");
