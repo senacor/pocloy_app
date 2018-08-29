@@ -12,38 +12,41 @@ import de.senacor.bankathon.pocloy.R;
 
 public enum StickerResources {
     @SerializedName("bottle_wine")
-    BOTTLE("bottle_wine", R.drawable.sticker_bottle_wine),
+    BOTTLE("bottle_wine", R.drawable.sticker_bottle_wine, R.drawable.sticker_bottle_wine_colored),
     @SerializedName("car_hatchback")
-    CAR("car_hatchback", R.drawable.sticker_car_hatchback),
+    CAR("car_hatchback", R.drawable.sticker_car_hatchback, R.drawable.sticker_car_hatchback),
     @SerializedName("cup")
-    CUP("cup", R.drawable.sticker_cup),
+    CUP("cup", R.drawable.sticker_cup, R.drawable.sticker_cup),
     @SerializedName("food")
-    FOOD("food", R.drawable.sticker_food),
+    FOOD("food", R.drawable.sticker_food, R.drawable.sticker_food),
     @SerializedName("food_apple")
-    APPLE("food_apple", R.drawable.sticker_food_apple),
+    APPLE("food_apple", R.drawable.sticker_food_apple, R.drawable.sticker_food_apple),
     @SerializedName("gas_station")
-    GAS_STATION("gas_station", R.drawable.sticker_gas_station),
+    GAS_STATION("gas_station", R.drawable.sticker_gas_station, R.drawable.sticker_gas_station),
     @SerializedName("hamburger")
-    HAMBURGER("hamburger", R.drawable.sticker_hamburger),
+    HAMBURGER("hamburger", R.drawable.sticker_hamburger, R.drawable.sticker_hamburger_colored),
     @SerializedName("pizza")
-    PIZZA("pizza", R.drawable.sticker_pizza),
+    PIZZA("pizza", R.drawable.sticker_pizza, R.drawable.sticker_pizza),
     @SerializedName("silverware_fork_knife")
-    SILVERWARE("silverware_fork_knife", R.drawable.sticker_silverware_fork_knife),
+    SILVERWARE("silverware_fork_knife", R.drawable.sticker_silverware_fork_knife, R.drawable.sticker_silverware_fork_knife),
     @SerializedName("sunglasses")
-    SUNGLASSES("sunglasses", R.drawable.sticker_sunglasses),
+    SUNGLASSES("sunglasses", R.drawable.sticker_sunglasses, R.drawable.sticker_sunglasses),
     @SerializedName("white_balance_sunny")
-    SUN("white_balance_sunny", R.drawable.sticker_white_balance_sunny),
+    SUN("white_balance_sunny", R.drawable.sticker_white_balance_sunny, R.drawable.sticker_white_balance_sunny),
     @SerializedName("unknown")
-    UNKNOWN("unknown", R.drawable.gift),
-    OTHER(null, R.drawable.sticker_alert_circle_outline);
+    UNKNOWN("unknown", R.drawable.gift, R.drawable.gift),
+    OTHER(null, R.drawable.sticker_alert_circle_outline, R.drawable.sticker_alert_circle_outline);
 
     private String imageCode;
     @Expose(serialize = false, deserialize = false)
     private int imageReference;
+    @Expose(serialize = false, deserialize = false)
+    private int usedImageReference;
 
-    StickerResources(String imageCode, int imageReference) {
+    StickerResources(String imageCode, int imageReference, int usedImageReference) {
         this.imageCode = imageCode;
         this.imageReference = imageReference;
+        this.usedImageReference = usedImageReference;
     }
 
     public String getImageCode() {
@@ -52,6 +55,10 @@ public enum StickerResources {
 
     public int getImageReference() {
         return imageReference;
+    }
+
+    public int getUsedImageReference() {
+        return usedImageReference;
     }
 
     public static StickerResources forImageCode(String imageCode) {
