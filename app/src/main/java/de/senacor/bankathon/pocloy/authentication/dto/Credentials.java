@@ -5,12 +5,12 @@ public class Credentials {
     private String password;
     
     public Credentials(String username, String password) {
-        this.username = username;
+        this.username = username.toLowerCase();
         this.password = password;
     }
 
     public void setUsername(String email) {
-        this.username = email;
+        this.username = email.toLowerCase();
     }
 
     public void setPassword(String password) {
