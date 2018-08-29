@@ -34,13 +34,11 @@ import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
 import de.senacor.bankathon.pocloy.authentication.dto.StickerData;
 import de.senacor.bankathon.pocloy.authentication.dto.StickerResources;
-import de.senacor.bankathon.pocloy.authentication.dto.UserAssets;
 import de.senacor.bankathon.pocloy.authentication.dto.UserVoucher;
 import de.senacor.bankathon.pocloy.authentication.dto.VoucherRedeemingData;
 import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
 import de.senacor.bankathon.pocloy.authentication.task.LoadMyVouchersTask;
 import de.senacor.bankathon.pocloy.authentication.task.RedeemStickerTask;
-import de.senacor.bankathon.pocloy.authentication.task.ReloadStickerTask;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -142,18 +140,6 @@ public class RedeemStickersFragment extends Fragment {
                         loadMyVouchersTask.execute();
                     }
                 });
-
-                ReloadStickerTask reloadStickerTask = new ReloadStickerTask() {
-                    @Override
-                    protected void handleSuccessfulReload(List<UserAssets> result) {
-                        DataHolder.setUserAssets(result);
-                    }
-
-                    @Override
-                    protected void handleFailedReload() {
-
-                    }
-                };reloadStickerTask.execute();
             }
 
             @Override
