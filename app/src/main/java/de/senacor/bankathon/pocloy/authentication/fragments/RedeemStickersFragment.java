@@ -21,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 import org.springframework.util.StringUtils;
 import java.util.List;
 import java.util.Locale;
@@ -35,7 +36,7 @@ import de.senacor.bankathon.pocloy.authentication.dto.StickerData;
 import de.senacor.bankathon.pocloy.authentication.dto.StickerResources;
 import de.senacor.bankathon.pocloy.authentication.dto.VoucherRedeemingData;
 import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
-import de.senacor.bankathon.pocloy.authentication.task.RedeemVoucherTask;
+import de.senacor.bankathon.pocloy.authentication.task.RedeemStickerTask;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -46,11 +47,11 @@ public class RedeemStickersFragment extends Fragment {
 
     @BindView(R.id.redeem_vouchers_table)
     TableLayout redeemVouchersTable;
-    
+
     LayoutInflater layoutInflater;
 
     private List<VoucherRedeemingData> previousTableRows;
-    
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
@@ -115,16 +116,23 @@ public class RedeemStickersFragment extends Fragment {
     private void showDialog(int voucherRedeemingId, Map<StickerResources, Integer> entries) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(getContext());
         builderSingle.setTitle("Redeem Stickers");
-        RedeemVoucherTask redeemVoucherTask = new RedeemVoucherTask(String.valueOf(voucherRedeemingId)) {
+        RedeemStickerTask redeemStickerTask = new RedeemStickerTask(String.valueOf(voucherRedeemingId)) {
             @Override
             protected void handleSuccessfulRedemption() {
-                System.out.println("");
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getActivity(), "Sticker Redemption was successful", Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
 
             @Override
-            protected void handleFailedRedemption() {
-                System.out.println("");
-
+            protected void handleFailedRedemption(String reason) {
+                getActivity().runOnUiThread(new Runnable() {
+                    public void run() {
+                        Toast.makeText(getActivity(), reason, Toast.LENGTH_SHORT).show();
+                    }
+                });
             }
         };
 
@@ -132,7 +140,8 @@ public class RedeemStickersFragment extends Fragment {
         builderSingle.setNegativeButton("Redeem", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                redeemVoucherTask.execute();
+                dialog.dismiss();
+                redeemStickerTask.execute();
             }
         });
         builderSingle.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
@@ -150,13 +159,18 @@ public class RedeemStickersFragment extends Fragment {
         builderSingle.show();
     }
 
+    private void showFailedToast(String reason) {
+        Toast.makeText(getContext(), reason, Toast.LENGTH_LONG);
+    }
+
+
     private ArrayAdapter<StickerData> generateArrayAdapter(Map<StickerResources, Integer> entries) {
         List<StickerData> stickerDataList = entries.entrySet()
                 .stream()
                 .map(entry -> new StickerData(entry.getValue(), entry.getKey().getImageCode()))
                 .collect(Collectors.toList());
 
-        final ArrayAdapter<StickerData> arrayAdapter = new ArrayAdapter<StickerData>(getContext(), android.R.layout.select_dialog_singlechoice, stickerDataList){
+        final ArrayAdapter<StickerData> arrayAdapter = new ArrayAdapter<StickerData>(getContext(), android.R.layout.select_dialog_singlechoice, stickerDataList) {
             @NonNull
             @Override
             public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
