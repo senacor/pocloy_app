@@ -1,6 +1,5 @@
 package de.senacor.bankathon.pocloy.authentication.fragments;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,6 +35,7 @@ import de.senacor.bankathon.pocloy.R;
 import de.senacor.bankathon.pocloy.authentication.dto.StickerResources;
 import de.senacor.bankathon.pocloy.authentication.dto.TradeOffer;
 import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
+import de.senacor.bankathon.pocloy.authentication.task.AcceptTradeTask;
 import de.senacor.bankathon.pocloy.authentication.task.LoadAvailableTradesTask;
 import de.senacor.bankathon.pocloy.authentication.task.UpdateMyTradesTask;
 
@@ -136,7 +136,21 @@ public class TradeStickersFragment extends Fragment {
         builderSingle.setIcon(R.drawable.ic_launcher_background);
         builderSingle.setTitle(R.string.trade_stickers_accept_title);
         builderSingle.setPositiveButton("OK", (dialog, which) -> {
-            // TODO Perform trade
+            AcceptTradeTask acceptTradeTask = new AcceptTradeTask() {
+
+                @Override
+                protected void handleSuccessfulRetrieval() {
+                    Toast toast = Toast.makeText(getContext(), "Trade successfull!", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+
+                @Override
+                protected void handleFailedRetrieval() {
+                    Toast toast = Toast.makeText(getContext(), "Trade failed", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            };
+            acceptTradeTask.execute(tradeOffer);
             dialog.dismiss();
         });
         builderSingle.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
