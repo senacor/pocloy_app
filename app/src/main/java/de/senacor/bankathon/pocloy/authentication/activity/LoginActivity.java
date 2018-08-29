@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
@@ -115,6 +114,7 @@ public class LoginActivity extends AppCompatActivity {
                     showProgress(false);
                     Toast toast = Toast.makeText(getApplicationContext(), "Der Login ist fehlgeschlagen", Toast.LENGTH_LONG);
                     toast.show();
+                    authenticationTask = null;
                 }
             };
             authenticationTask.execute((Void) null);
