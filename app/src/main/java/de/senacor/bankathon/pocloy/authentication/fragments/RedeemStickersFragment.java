@@ -34,9 +34,13 @@ import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
 import de.senacor.bankathon.pocloy.authentication.dto.StickerData;
 import de.senacor.bankathon.pocloy.authentication.dto.StickerResources;
+import de.senacor.bankathon.pocloy.authentication.dto.UserAssets;
+import de.senacor.bankathon.pocloy.authentication.dto.UserVoucher;
 import de.senacor.bankathon.pocloy.authentication.dto.VoucherRedeemingData;
 import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
+import de.senacor.bankathon.pocloy.authentication.task.LoadMyVouchersTask;
 import de.senacor.bankathon.pocloy.authentication.task.RedeemStickerTask;
+import de.senacor.bankathon.pocloy.authentication.task.ReloadStickerTask;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -122,8 +126,34 @@ public class RedeemStickersFragment extends Fragment {
                 getActivity().runOnUiThread(new Runnable() {
                     public void run() {
                         Toast.makeText(getActivity(), "Sticker Redemption was successful", Toast.LENGTH_SHORT).show();
+                        LoadMyVouchersTask loadMyVouchersTask = new LoadMyVouchersTask() {
+                            @Override
+                            protected void handleSuccessfulRetrieval(List<UserVoucher> result) {
+                                DataHolder.setUserVouchers(result);
+                                
+                            }
+
+                            @Override
+                            protected void handleFailedRetrieval() {
+                                Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Own vouchers " + "could not be " + "loaded", Toast.LENGTH_SHORT);
+                                toast.show();
+                            }
+                        };
+                        loadMyVouchersTask.execute();
                     }
                 });
+
+                ReloadStickerTask reloadStickerTask = new ReloadStickerTask() {
+                    @Override
+                    protected void handleSuccessfulReload(List<UserAssets> result) {
+                        DataHolder.setUserAssets(result);
+                    }
+
+                    @Override
+                    protected void handleFailedReload() {
+
+                    }
+                };reloadStickerTask.execute();
             }
 
             @Override

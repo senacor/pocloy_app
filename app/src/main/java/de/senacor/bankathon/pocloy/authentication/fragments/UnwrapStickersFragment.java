@@ -50,6 +50,7 @@ public class UnwrapStickersFragment extends Fragment {
             firstSticker.setVisibility(View.VISIBLE);
             if (userAssets.get(0).getStatus().equals("unpacked")) {
                 firstSticker.setImageResource(StickerResources.forImageCode(userAssets.get(0).getContent()).getImageReference());
+                firstSticker.refreshDrawableState();
             } else {
                 firstSticker.setOnClickListener(createOnClickListener(userAssets.get(0).getCodeId()));
             }
@@ -57,6 +58,7 @@ public class UnwrapStickersFragment extends Fragment {
             secondSticker.setVisibility(View.VISIBLE);
             if (userAssets.get(1).getStatus().equals("unpacked")) {
                 secondSticker.setImageResource(StickerResources.forImageCode(userAssets.get(1).getContent()).getImageReference());
+                secondSticker.refreshDrawableState();
             } else {
                 secondSticker.setOnClickListener(createOnClickListener(userAssets.get(1).getCodeId()));
             }
@@ -65,6 +67,7 @@ public class UnwrapStickersFragment extends Fragment {
             thirdSticker.setVisibility(View.VISIBLE);
             if (userAssets.get(2).getStatus().equals("unpacked")) {
                 thirdSticker.setImageResource(StickerResources.forImageCode(userAssets.get(2).getContent()).getImageReference());
+                thirdSticker.refreshDrawableState();
             } else {
                 thirdSticker.setOnClickListener(createOnClickListener(userAssets.get(2).getCodeId()));
             }
@@ -72,6 +75,7 @@ public class UnwrapStickersFragment extends Fragment {
             fourthSticker.setVisibility(View.VISIBLE);
             if (userAssets.get(3).getStatus().equals("unpacked")) {
                 fourthSticker.setImageResource(StickerResources.forImageCode(userAssets.get(3).getContent()).getImageReference());
+                fourthSticker.refreshDrawableState();
             } else {
                 fourthSticker.setOnClickListener(createOnClickListener(userAssets.get(3).getCodeId()));
             }
@@ -82,6 +86,7 @@ public class UnwrapStickersFragment extends Fragment {
             firstSticker.setVisibility(View.VISIBLE);
             if (userAssets.get(0).getStatus().equals("unpacked")) {
                 firstSticker.setImageResource(StickerResources.forImageCode(userAssets.get(0).getContent()).getImageReference());
+                firstSticker.refreshDrawableState();
             } else {
                 firstSticker.setOnClickListener(createOnClickListener(userAssets.get(0).getCodeId()));
             }
@@ -89,6 +94,7 @@ public class UnwrapStickersFragment extends Fragment {
             secondSticker.setVisibility(View.VISIBLE);
             if (userAssets.get(1).getStatus().equals("unpacked")) {
                 secondSticker.setImageResource(StickerResources.forImageCode(userAssets.get(1).getContent()).getImageReference());
+                secondSticker.refreshDrawableState();
             } else {
                 secondSticker.setOnClickListener(createOnClickListener(userAssets.get(1).getCodeId()));
             }
@@ -97,6 +103,7 @@ public class UnwrapStickersFragment extends Fragment {
             thirdSticker.setVisibility(View.VISIBLE);
             if (userAssets.get(2).getStatus().equals("unpacked")) {
                 thirdSticker.setImageResource(StickerResources.forImageCode(userAssets.get(2).getContent()).getImageReference());
+                thirdSticker.refreshDrawableState();
             } else {
                 thirdSticker.setOnClickListener(createOnClickListener(userAssets.get(2).getCodeId()));
             }
@@ -106,6 +113,7 @@ public class UnwrapStickersFragment extends Fragment {
             firstSticker.setVisibility(View.VISIBLE);
             if (userAssets.get(0).getStatus().equals("unpacked")) {
                 firstSticker.setImageResource(StickerResources.forImageCode(userAssets.get(0).getContent()).getImageReference());
+                firstSticker.refreshDrawableState();
             } else {
                 firstSticker.setOnClickListener(createOnClickListener(userAssets.get(0).getCodeId()));
             }
@@ -113,6 +121,7 @@ public class UnwrapStickersFragment extends Fragment {
             secondSticker.setVisibility(View.VISIBLE);
             if (userAssets.get(1).getStatus().equals("unpacked")) {
                 secondSticker.setImageResource(StickerResources.forImageCode(userAssets.get(1).getContent()).getImageReference());
+                secondSticker.refreshDrawableState();
             } else {
                 secondSticker.setOnClickListener(createOnClickListener(userAssets.get(1).getCodeId()));
             }
@@ -122,6 +131,7 @@ public class UnwrapStickersFragment extends Fragment {
             firstSticker.setVisibility(View.VISIBLE);
             if (userAssets.get(0).getStatus().equals("unpacked")) {
                 firstSticker.setImageResource(StickerResources.forImageCode(userAssets.get(0).getContent()).getImageReference());
+                firstSticker.refreshDrawableState();
             } else {
                 firstSticker.setOnClickListener(createOnClickListener(userAssets.get(0).getCodeId()));
             }
@@ -137,18 +147,30 @@ public class UnwrapStickersFragment extends Fragment {
                         if (userAssets.get(i).getCodeId().equals(result.getCodeId())) {
                             if (i == 0) {
                                 firstSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
+                                userAssets.get(i).setStatus("unpacked");
+                                userAssets.get(i).setContent(result.getContent());
+                                updateUserAssets();
                                 break;
                             }
                             if (i == 1) {
                                 secondSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
+                                userAssets.get(i).setStatus("unpacked");
+                                userAssets.get(i).setContent(result.getContent());
+                                updateUserAssets();
                                 break;
                             }
                             if (i == 2) {
                                 thirdSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
+                                userAssets.get(i).setStatus("unpacked");
+                                userAssets.get(i).setContent(result.getContent());
+                                updateUserAssets();
                                 break;
                             }
                             if (i == 3) {
                                 fourthSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
+                                userAssets.get(i).setStatus("unpacked");
+                                userAssets.get(i).setContent(result.getContent());
+                                updateUserAssets();
                                 break;
                             }
                         }
@@ -167,6 +189,10 @@ public class UnwrapStickersFragment extends Fragment {
             };
             unpackStickerTask.execute();
         };
+    }
+
+    private void updateUserAssets() {
+        DataHolder.setUserAssets(userAssets);
     }
 
 }
