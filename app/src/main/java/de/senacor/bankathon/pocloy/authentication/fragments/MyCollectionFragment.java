@@ -5,14 +5,15 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,8 +28,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
 import de.senacor.bankathon.pocloy.authentication.dto.StickerData;
+import de.senacor.bankathon.pocloy.authentication.dto.StickerResources;
 import de.senacor.bankathon.pocloy.authentication.dto.UserAssets;
 import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
+import de.senacor.bankathon.pocloy.authentication.task.UpdateCollectionTask;
 
 public class MyCollectionFragment extends Fragment {
 
@@ -36,6 +39,9 @@ public class MyCollectionFragment extends Fragment {
 
     @BindView(R.id.stickerList)
     ListView stickersList;
+
+    @BindView(R.id.pullToRefreshCollection)
+    SwipeRefreshLayout pullToRefreshCollection;
 
     @Nullable
     @Override
@@ -48,7 +54,7 @@ public class MyCollectionFragment extends Fragment {
                         .map(arguments -> arguments.<StickerData>getParcelableArrayList(STICKER_DATA_KEY))
                         .map(filterOutUnknown())
                         .orElse(Collections.emptyList());
-        ListAdapter stickersAdapter = new ArrayAdapter<StickerData>(
+        ArrayAdapter stickersAdapter = new ArrayAdapter<StickerData>(
                 getContext(),
                 android.R.layout.simple_list_item_1,
                 stickerData
@@ -79,6 +85,28 @@ public class MyCollectionFragment extends Fragment {
         };
 
         stickersList.setAdapter(stickersAdapter);
+
+        pullToRefreshCollection.setOnRefreshListener(() -> {
+            UpdateCollectionTask updateCollectionTask = new UpdateCollectionTask() {
+
+                @Override
+                protected void handleFailedAuthentication() {
+                    Toast toast = Toast.makeText(getContext(), "Could not update sticker collection", Toast.LENGTH_SHORT);
+                    toast.show();
+                }
+
+                @Override
+                protected void handleSuccessfulAuthentication(List<UserAssets> result) {
+                    super.handleSuccessfulAuthentication(result);
+                    stickersAdapter.clear();
+                    stickerData.addAll(mapUserAssetsToStickData(result));
+                    pullToRefreshCollection.setRefreshing(false);
+                }
+            };
+            pullToRefreshCollection.setRefreshing(true);
+            updateCollectionTask.execute((Void) null);
+        });
+
         return view;
     }
 
@@ -104,8 +132,17 @@ public class MyCollectionFragment extends Fragment {
      */
     @NonNull
     public static MyCollectionFragment createMyCollectionFragment() {
-        List<StickerData> stickerData = DataHolder.getUserAssets()
+        List<StickerData> stickerData = mapUserAssetsToStickData(DataHolder.getUserAssets());
+
+        MyCollectionFragment fragment = new MyCollectionFragment();
+        fragment.setArguments(createBundle(stickerData));
+        return fragment;
+    }
+
+    private static List<StickerData> mapUserAssetsToStickData(List<UserAssets> userAssets) {
+        return userAssets
                 .stream()
+                .filter(userAsset -> !StickerResources.UNKNOWN.getImageCode().equals(userAsset.getContent()))
                 .collect(Collectors.toMap(
                         UserAssets::getContent,
                         userAsset -> 1,
@@ -114,10 +151,6 @@ public class MyCollectionFragment extends Fragment {
                 .stream()
                 .map(entry -> new StickerData(entry.getValue(), entry.getKey()))
                 .collect(Collectors.toList());
-
-        MyCollectionFragment fragment = new MyCollectionFragment();
-        fragment.setArguments(createBundle(stickerData));
-        return fragment;
     }
 
     private class ViewHolder {
