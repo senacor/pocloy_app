@@ -179,38 +179,6 @@ public class TradeStickersFragment extends Fragment {
         builderSingle.show();
     }
 
-//    private ArrayAdapter<StickerData> generateArrayAdapter(Map<StickerResources, Integer> entries) {
-//        List<StickerData> stickerDataList = entries.entrySet()
-//                .stream()
-//                .map(entry -> new StickerData(entry.getKey().getImageReference(), entry.getKey().getImageCode()))
-//                .collect(Collectors.toList());
-//
-//        final ArrayAdapter<StickerData> arrayAdapter = new ArrayAdapter<StickerData>(getContext(), android.R.layout
-//                .select_dialog_singlechoice, stickerDataList);
-//
-//        return arrayAdapter;
-//    }
-
-//    @NonNull
-//    private LinearLayout createPriceOverview(Map.Entry<StickerResources, Integer> entry) {
-//        LinearLayout price = new LinearLayout(getContext());
-//        price.setOrientation(LinearLayout.HORIZONTAL);
-//
-//        ImageView priceImage = new ImageView(getContext());
-//        priceImage.setImageResource(entry.getKey().getImageReference());
-//        priceImage.setMinimumHeight(20);
-//        price.addView(priceImage);
-//
-//        TextView amount = new TextView(getContext());
-//        amount.setText(String.format(Locale.getDefault(), "x%d", entry.getValue()));
-//        amount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-//        amount.setPadding(10, 0, 20, 0);
-//        amount.setForegroundGravity(Gravity.END);
-//        price.addView(amount);
-//
-//        return price;
-//    }
-
     private class FilterWatcher implements TextWatcher {
         @Override
         public void beforeTextChanged(CharSequence s, int start, int count, int after) {
