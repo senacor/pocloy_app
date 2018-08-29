@@ -1,14 +1,16 @@
 package de.senacor.bankathon.pocloy.authentication.fragments;
 
-import android.app.AlertDialog;
-import android.graphics.Color;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -19,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.springframework.util.StringUtils;
 
@@ -30,8 +33,11 @@ import java.util.stream.Collectors;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
+import de.senacor.bankathon.pocloy.authentication.dto.StickerResources;
 import de.senacor.bankathon.pocloy.authentication.dto.TradeOffer;
 import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
+import de.senacor.bankathon.pocloy.authentication.task.LoadAvailableTradesTask;
+import de.senacor.bankathon.pocloy.authentication.task.UpdateMyTradesTask;
 
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
@@ -43,6 +49,9 @@ public class TradeStickersFragment extends Fragment {
 
     @BindView(R.id.trade_stickers_table)
     TableLayout tradeStickersTable;
+
+    @BindView(R.id.add_trade_offer)
+    FloatingActionButton addTradeOffer;
 
     private List<TradeOffer> previousTableRows;
 
@@ -56,6 +65,8 @@ public class TradeStickersFragment extends Fragment {
 
         previousTableRows = DataHolder.getTradeOffers();
         buildTable(previousTableRows);
+
+        addTradeOffer.setOnClickListener(v -> addTradeOffer());
 
         return view;
     }
@@ -120,13 +131,12 @@ public class TradeStickersFragment extends Fragment {
         return v -> showDialog(tradeOffer);
     }
 
-
     private void showDialog(TradeOffer tradeOffer) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(getContext());
         builderSingle.setIcon(R.drawable.ic_launcher_background);
         builderSingle.setTitle(R.string.trade_stickers_accept_title);
         builderSingle.setPositiveButton("OK", (dialog, which) -> {
-            // TODO trade tradeOffer.getExchangeOfferId()
+            // TODO Perform trade
             dialog.dismiss();
         });
         builderSingle.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
@@ -177,6 +187,52 @@ public class TradeStickersFragment extends Fragment {
         builderSingle.setView(offer);
 
         builderSingle.show();
+    }
+
+    private void addTradeOffer() {
+        // TODO Make dynamic
+        TradeOffer tradeOffer = new TradeOffer(StickerResources.APPLE, 3, StickerResources.HAMBURGER, 1);
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Offer new trade?");
+        builder.setMessage("3 apples for one hamburger");
+        builder.setPositiveButton("OK", (dialog, which) -> {
+            UpdateMyTradesTask updateMyTradesTask = new UpdateMyTradesTask() {
+                @Override
+                protected void handleSuccessfulRetrieval() {
+                    Log.d("TradeStickersFragment", "Trade performed, updating...");
+                    LoadAvailableTradesTask loadAvailableTradesTask = new LoadAvailableTradesTask() {
+
+                        @Override
+                        protected void handleSuccessfulRetrieval(List<TradeOffer> result) {
+                            Log.d("TradeStickersFragment", "Trade performed, updating...");
+                            DataHolder.setTradeOffers(result);
+                            Toast toast = Toast.makeText(getContext(), "Created new trade: 3 apples for one hamburger", Toast.LENGTH_SHORT);
+                            toast.show();
+                        }
+
+                        @Override
+                        protected void handleFailedRetrieval() {
+                            Log.d("TradeStickersFragment", "Trades could not be updated");
+                            Toast toast = Toast.makeText(getContext(), "Trades could not be updated", Toast.LENGTH_LONG);
+                            toast.show();
+                        }
+                    };
+                    loadAvailableTradesTask.execute((Void) null);
+                }
+
+                @Override
+                protected void handleFailedRetrieval() {
+                    Log.d("TradeStickersFragment", "Trade could not be performed");
+                    Toast toast = Toast.makeText(getContext(), "Trade could not be performed", Toast.LENGTH_LONG);
+                    toast.show();
+                }
+            };
+            updateMyTradesTask.execute(new UpdateMyTradesTask.TradeOfferUpdate(tradeOffer, UpdateMyTradesTask.TradeOfferAction.ADD_NEW_OFFER));
+            dialog.dismiss();
+        });
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
+        builder.show();
     }
 
     private class FilterWatcher implements TextWatcher {

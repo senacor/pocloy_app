@@ -18,7 +18,6 @@ public abstract class LoadAvailableTradesTask extends AsyncTask<Void, Void, List
 
     private static final String AVAILABLE_TRADES_URI = "https://desolate-depths-64341.herokuapp.com/user/getOtherExchangeOffers";
 
-
     private final GsonRestTemplate restTemplate;
 
     public LoadAvailableTradesTask() {
@@ -48,7 +47,6 @@ public abstract class LoadAvailableTradesTask extends AsyncTask<Void, Void, List
         }
         return null;
     }
-
 
     @Override
     protected void onPostExecute(List<TradeOffer> tradeOffers) {
