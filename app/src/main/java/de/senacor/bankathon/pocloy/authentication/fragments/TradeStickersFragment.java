@@ -1,6 +1,7 @@
 package de.senacor.bankathon.pocloy.authentication.fragments;
 
 import android.app.AlertDialog;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -124,21 +125,57 @@ public class TradeStickersFragment extends Fragment {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(getContext());
         builderSingle.setIcon(R.drawable.ic_launcher_background);
         builderSingle.setTitle(R.string.trade_stickers_accept_title);
+        builderSingle.setPositiveButton("OK", (dialog, which) -> {
+            // TODO trade tradeOffer.getExchangeOfferId()
+            dialog.dismiss();
+        });
         builderSingle.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-//        builderSingle.setAdapter(stickerDataArrayAdapter, (dialog, which) -> {
-//            StickerData strName = stickerDataArrayAdapter.getItem(which);
-//            AlertDialog.Builder builderInner = new AlertDialog.Builder(getContext());
-//            builderInner.setMessage("Message");
-//            builderInner.setTitle("Specify Text");
-//            builderInner.setPositiveButton("Redeem", new DialogInterface.OnClickListener() {
-//                @Override
-//                public void onClick(DialogInterface dialog, int which) {
-//                    System.out.println("RedeemStickersFragment.onClick");
-//                }
-//            });
-//            builderInner.show();
-//        });
+        LinearLayout offer = new LinearLayout(getContext());
+        offer.setOrientation(LinearLayout.VERTICAL);
+        offer.setLayoutParams(new ViewGroup.LayoutParams(MATCH_PARENT, MATCH_PARENT));
+        offer.setGravity(Gravity.CENTER);
+        offer.setForegroundGravity(Gravity.CENTER);
+        offer.setHorizontalGravity(Gravity.CENTER_HORIZONTAL);
+        offer.setHorizontalGravity(Gravity.CENTER_VERTICAL);
+        offer.setPadding(20, 10, 20, 10);
+
+        LinearLayout give = new LinearLayout(getContext());
+        give.setGravity(Gravity.CENTER);
+        give.setOrientation(LinearLayout.HORIZONTAL);
+        TextView givePrefix = new TextView(getContext());
+        givePrefix.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        givePrefix.setText(R.string.trade_offer_title);
+        give.addView(givePrefix);
+        TextView giveAmount = new TextView(getContext());
+        giveAmount.setPadding(10, 0, 10, 0);
+        giveAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        giveAmount.setText(String.format(Locale.getDefault(), "%dx", tradeOffer.getOfferedStickerAmount()));
+        give.addView(giveAmount);
+        ImageView giveImage = new ImageView(getContext());
+        giveImage.setImageResource(tradeOffer.getOfferedStickerType().getImageReference());
+        give.addView(giveImage);
+        offer.addView(give);
+
+        LinearLayout receive = new LinearLayout(getContext());
+        receive.setGravity(Gravity.CENTER);
+        receive.setOrientation(LinearLayout.HORIZONTAL);
+        TextView receivePrefix = new TextView(getContext());
+        receivePrefix.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        receivePrefix.setText(R.string.trade_required_title);
+        receive.addView(receivePrefix);
+        TextView receiveAmount = new TextView(getContext());
+        receiveAmount.setPadding(10, 0, 10, 0);
+        receiveAmount.setTextSize(TypedValue.COMPLEX_UNIT_SP, 18);
+        receiveAmount.setText(String.format(Locale.getDefault(), "%dx", tradeOffer.getRequiredStickerAmount()));
+        receive.addView(receiveAmount);
+        ImageView receiveImage = new ImageView(getContext());
+        receiveImage.setImageResource(tradeOffer.getRequiredStickerType().getImageReference());
+        receive.addView(receiveImage);
+        offer.addView(receive);
+
+        builderSingle.setView(offer);
+
         builderSingle.show();
     }
 
