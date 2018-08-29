@@ -14,7 +14,8 @@ public class DataHolder {
     private static List<UserAssets> userAssets = Collections.emptyList();
     private static List<VoucherRedeemingData> voucherRedeemingData = Collections.emptyList();
     private static List<UserVoucher> userVouchers = Collections.emptyList();
-    private static List<TradeOffer> tradeOffers = Arrays.asList(
+    private static List<TradeOffer> tradeOffers = Collections.emptyList();
+    /*Arrays.asList(
             new TradeOffer(1, StickerResources.BOTTLE, 2, StickerResources.APPLE, 3),
             new TradeOffer(2, StickerResources.CAR, 1, StickerResources.CUP, 10),
             new TradeOffer(3, StickerResources.SILVERWARE, 2, StickerResources.SUN, 2),
@@ -29,7 +30,7 @@ public class DataHolder {
             new TradeOffer(12, StickerResources.CUP, 8, StickerResources.GAS_STATION, 5),
             new TradeOffer(13, StickerResources.GAS_STATION, 7, StickerResources.SUN, 4),
             new TradeOffer(14, StickerResources.HAMBURGER, 15, StickerResources.GAS_STATION, 2)
-    );
+    );*/
 
     public static List<UserAssets> getUserAssets() {
         return userAssets;

@@ -23,6 +23,7 @@ import java.util.Optional;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
+import de.senacor.bankathon.pocloy.authentication.dto.TradeOffer;
 import de.senacor.bankathon.pocloy.authentication.dto.UserVoucher;
 import de.senacor.bankathon.pocloy.authentication.dto.VoucherRedeemingData;
 import de.senacor.bankathon.pocloy.authentication.fragments.ShowVouchersFragment;
@@ -30,6 +31,7 @@ import de.senacor.bankathon.pocloy.authentication.fragments.RedeemStickersFragme
 import de.senacor.bankathon.pocloy.authentication.fragments.TradeStickersFragment;
 import de.senacor.bankathon.pocloy.authentication.fragments.UnwrapStickersFragment;
 import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
+import de.senacor.bankathon.pocloy.authentication.task.LoadAvailableTradesTask;
 import de.senacor.bankathon.pocloy.authentication.task.LoadAvailableVouchersTask;
 import de.senacor.bankathon.pocloy.authentication.task.LoadMyVouchersTask;
 
@@ -78,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         loadAvailableVouchers();
         loadOwnVouchers();
+        loadAvailableTrades();
         super.onPostCreate(savedInstanceState);
     }
 
@@ -181,5 +184,22 @@ public class MainActivity extends AppCompatActivity {
             }
         };
         loadMyVouchersTask.execute((Void) null);
+    }
+
+    private void loadAvailableTrades() {
+        LoadAvailableTradesTask loadAvailableTradesTask = new LoadAvailableTradesTask() {
+
+            @Override
+            protected void handleSuccessfulRetrieval(List<TradeOffer> result) {
+                DataHolder.setTradeOffers(result);
+            }
+
+            @Override
+            protected void handleFailedRetrieval() {
+                Toast toast = Toast.makeText(getApplicationContext(), "Trade offers could not be loaded", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+        };
+        loadAvailableTradesTask.execute((Void) null);
     }
 }
