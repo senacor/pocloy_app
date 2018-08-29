@@ -26,4 +26,9 @@
     <string name="exchange_voucher">Scan this voucher</string>
     <string name="exchange_voucher_ok">OK</string>
 
+    <!-- Strings related to trading -->
+    <string name="trade_offer_title">Will give</string>
+    <string name="trade_required_title">for</string>
+    <string name="trade_stickers_accept_title">Accept this trade offer?</string>
+
 </resources>

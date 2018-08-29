@@ -104,12 +104,7 @@ public class RedeemStickersFragment extends Fragment {
     }
 
     private View.OnClickListener createTableRowOnClickListener(Map<StickerResources, Integer> entries) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showDialog(entries);
-            }
-        };
+        return v -> showDialog(entries);
     }
 
 
@@ -119,28 +114,20 @@ public class RedeemStickersFragment extends Fragment {
         builderSingle.setTitle("Select One Name:-");
 
         ArrayAdapter<StickerData> stickerDataArrayAdapter = generateArrayAdapter(entries);
-        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
+        builderSingle.setNegativeButton("Cancel", (dialog, which) -> dialog.dismiss());
 
-        builderSingle.setAdapter(stickerDataArrayAdapter, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                StickerData strName = stickerDataArrayAdapter.getItem(which);
-                AlertDialog.Builder builderInner = new AlertDialog.Builder(getContext());
-                builderInner.setMessage("Message");
-                builderInner.setTitle("Specify Text");
-                builderInner.setPositiveButton("Redeem", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        System.out.println("RedeemStickersFragment.onClick");
-                    }
-                });
-                builderInner.show();
-            }
+        builderSingle.setAdapter(stickerDataArrayAdapter, (dialog, which) -> {
+            StickerData strName = stickerDataArrayAdapter.getItem(which);
+            AlertDialog.Builder builderInner = new AlertDialog.Builder(getContext());
+            builderInner.setMessage("Message");
+            builderInner.setTitle("Specify Text");
+            builderInner.setPositiveButton("Redeem", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    System.out.println("RedeemStickersFragment.onClick");
+                }
+            });
+            builderInner.show();
         });
         builderSingle.show();
     }

@@ -3,6 +3,7 @@ package de.senacor.bankathon.pocloy.authentication.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -128,42 +129,43 @@ public class UnwrapStickersFragment extends Fragment {
     }
 
     private View.OnClickListener createOnClickListener(String codeId) {
-        return new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                UnpackStickerTask unpackStickerTask = new UnpackStickerTask(codeId) {
-                    @Override
-                    protected void handleSuccessfulUnpackOfSticker(UnpackedSticker result) {
-                        for (int i = 0; i < userAssets.size(); i++) {
-                            if (userAssets.get(i).getCodeId().equals(result.getCodeId())) {
-                                if (i == 0) {
-                                    firstSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
-                                    break;
-                                }
-                                if (i == 1) {
-                                    secondSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
-                                    break;
-                                }
-                                if (i == 2) {
-                                    thirdSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
-                                    break;
-                                }
-                                if (i == 3) {
-                                    fourthSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
-                                    break;
-                                }
+        return v -> {
+            UnpackStickerTask unpackStickerTask = new UnpackStickerTask(codeId) {
+                @Override
+                protected void handleSuccessfulUnpackOfSticker(UnpackedSticker result) {
+                    for (int i = 0; i < userAssets.size(); i++) {
+                        if (userAssets.get(i).getCodeId().equals(result.getCodeId())) {
+                            if (i == 0) {
+                                firstSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
+                                break;
+                            }
+                            if (i == 1) {
+                                secondSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
+                                break;
+                            }
+                            if (i == 2) {
+                                thirdSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
+                                break;
+                            }
+                            if (i == 3) {
+                                fourthSticker.setImageResource(StickerResources.forImageCode(result.getContent()).getImageReference());
+                                break;
                             }
                         }
                     }
+                }
 
-                    @Override
-                    protected void handleFailedUnpackOfSticker(String reason) {
+                @Override
+                protected void handleFailedUnpackOfSticker(String reason) {
+                    try {
                         Toast toast = Toast.makeText(getActivity().getApplicationContext(), reason, Toast.LENGTH_LONG);
                         toast.show();
+                    } catch (Exception e) {
+                        Log.e("UnwrapStickersFragment", "Error while creating toast about failed unwrapping", e);
                     }
-                };
-                unpackStickerTask.execute();
-            }
+                }
+            };
+            unpackStickerTask.execute();
         };
     }
 
