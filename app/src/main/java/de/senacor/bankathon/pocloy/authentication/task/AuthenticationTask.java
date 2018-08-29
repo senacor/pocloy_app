@@ -33,7 +33,7 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<User
     @Override
     protected final List<UserAssets> doInBackground(Void... params) {
         try {
-            ResponseEntity<Void> responseEntity = restTemplate.postForEntity(LOGIN_URI, credentials, Void.class);
+            ResponseEntity<Void> responseEntity = restTemplate.postForEntity(LOGIN_URI, new Body(credentials, "My wonderful device token"), Void.class);
             if (responseEntity.getStatusCode().is2xxSuccessful()) {
                 Log.d("AuthenticationTask.doInBackground", "Login successfull");
                 GsonRestTemplate.setCredentials(credentials);
@@ -74,4 +74,22 @@ public abstract class AuthenticationTask extends AsyncTask<Void, Void, List<User
     protected abstract void handleSuccessfulAuthentication(List<UserAssets> result);
 
     protected abstract void handleFailedAuthentication();
+
+    private class Body {
+        private Credentials credentials;
+        private String device_token;
+
+        public Body(Credentials credentials, String device_token) {
+            this.credentials = credentials;
+            this.device_token = device_token;
+        }
+
+        public Credentials getCredentials() {
+            return credentials;
+        }
+
+        public String getDevice_token() {
+            return device_token;
+        }
+    }
 }
