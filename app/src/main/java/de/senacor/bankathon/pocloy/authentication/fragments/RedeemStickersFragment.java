@@ -1,5 +1,6 @@
 package de.senacor.bankathon.pocloy.authentication.fragments;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -9,7 +10,6 @@ import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -21,19 +21,13 @@ import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.stream.Collectors;
-
 import org.springframework.util.StringUtils;
-
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.senacor.bankathon.pocloy.R;
@@ -41,6 +35,7 @@ import de.senacor.bankathon.pocloy.authentication.dto.StickerData;
 import de.senacor.bankathon.pocloy.authentication.dto.StickerResources;
 import de.senacor.bankathon.pocloy.authentication.dto.VoucherRedeemingData;
 import de.senacor.bankathon.pocloy.authentication.framework.DataHolder;
+import de.senacor.bankathon.pocloy.authentication.task.RedeemVoucherTask;
 import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -51,13 +46,16 @@ public class RedeemStickersFragment extends Fragment {
 
     @BindView(R.id.redeem_vouchers_table)
     TableLayout redeemVouchersTable;
+    
+    LayoutInflater layoutInflater;
 
     private List<VoucherRedeemingData> previousTableRows;
-
+    
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_redeem, container, false);
+        this.layoutInflater = inflater;
         ButterKnife.bind(this, view);
 
         redeemVouchersFilter.addTextChangedListener(new FilterWatcher());
@@ -87,7 +85,8 @@ public class RedeemStickersFragment extends Fragment {
         redeamableProduct.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
         redeamableProduct.setForegroundGravity(Gravity.START);
         redeamableProduct.setPadding(20, 10, 10, 10);
-        redeamableProduct.setOnClickListener(createTableRowOnClickListener(voucherRedeemingData.getPrice()));
+        redeamableProduct.setOnClickListener(createTableRowOnClickListener(voucherRedeemingData.getId(), voucherRedeemingData
+                .getPrice()));
         tableRow.addView(redeamableProduct);
 
         LinearLayout priceOverview = new LinearLayout(getContext());
@@ -103,43 +102,49 @@ public class RedeemStickersFragment extends Fragment {
         return tableRow;
     }
 
-    private View.OnClickListener createTableRowOnClickListener(Map<StickerResources, Integer> entries) {
+    private View.OnClickListener createTableRowOnClickListener(int voucherRedeemingId, Map<StickerResources, Integer> entries) {
         return new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showDialog(entries);
+                showDialog(voucherRedeemingId, entries);
             }
         };
     }
 
 
-    private void showDialog(Map<StickerResources, Integer> entries) {
+    private void showDialog(int voucherRedeemingId, Map<StickerResources, Integer> entries) {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(getContext());
-        builderSingle.setIcon(R.drawable.ic_launcher_background);
-        builderSingle.setTitle("Select One Name:-");
+        builderSingle.setTitle("Redeem Stickers");
+        RedeemVoucherTask redeemVoucherTask = new RedeemVoucherTask(String.valueOf(voucherRedeemingId)) {
+            @Override
+            protected void handleSuccessfulRedemption() {
+                System.out.println("");
+            }
+
+            @Override
+            protected void handleFailedRedemption() {
+                System.out.println("");
+
+            }
+        };
 
         ArrayAdapter<StickerData> stickerDataArrayAdapter = generateArrayAdapter(entries);
-        builderSingle.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+        builderSingle.setNegativeButton("Redeem", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                redeemVoucherTask.execute();
+            }
+        });
+        builderSingle.setPositiveButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 dialog.dismiss();
             }
         });
-
         builderSingle.setAdapter(stickerDataArrayAdapter, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                StickerData strName = stickerDataArrayAdapter.getItem(which);
-                AlertDialog.Builder builderInner = new AlertDialog.Builder(getContext());
-                builderInner.setMessage("Message");
-                builderInner.setTitle("Specify Text");
-                builderInner.setPositiveButton("Redeem", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        System.out.println("RedeemStickersFragment.onClick");
-                    }
-                });
-                builderInner.show();
+                //nothing todo
             }
         });
         builderSingle.show();
@@ -148,11 +153,35 @@ public class RedeemStickersFragment extends Fragment {
     private ArrayAdapter<StickerData> generateArrayAdapter(Map<StickerResources, Integer> entries) {
         List<StickerData> stickerDataList = entries.entrySet()
                 .stream()
-                .map(entry -> new StickerData(entry.getKey().getImageReference(), entry.getKey().getImageCode()))
+                .map(entry -> new StickerData(entry.getValue(), entry.getKey().getImageCode()))
                 .collect(Collectors.toList());
 
-        final ArrayAdapter<StickerData> arrayAdapter = new ArrayAdapter<StickerData>(getContext(), android.R.layout
-                .select_dialog_singlechoice, stickerDataList);
+        final ArrayAdapter<StickerData> arrayAdapter = new ArrayAdapter<StickerData>(getContext(), android.R.layout.select_dialog_singlechoice, stickerDataList){
+            @NonNull
+            @Override
+            public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+                ViewHolder viewHolder = Optional.ofNullable(convertView)
+                        .map(View::getTag)
+                        .map(tag -> (ViewHolder) tag)
+                        .orElseGet(() -> {
+                            @SuppressLint("ViewHolder") View collectionItem =
+                                    layoutInflater.inflate(R.layout.redeem_sticker_item, parent, false);
+                            ImageView image = collectionItem.findViewById(R.id.redeem_sticker_image);
+                            TextView count = collectionItem.findViewById(R.id.redeem_sticker_count);
+                            return new ViewHolder(collectionItem, image, count);
+                        });
+                if (convertView != null) {
+                    convertView.setTag(viewHolder);
+                }
+
+                StickerData stickerData = getItem(position);
+                assert stickerData != null;
+                viewHolder.image.setImageResource(stickerData.getStickerId());
+                viewHolder.count.setText(String.format(Locale.getDefault(), "x%d", stickerData.getAmount()));
+
+                return viewHolder.collectionItem;
+            }
+        };
 
         return arrayAdapter;
     }
@@ -213,6 +242,18 @@ public class RedeemStickersFragment extends Fragment {
                     noWhitespaceFilter,
                     new InputFilter.LengthFilter(30)
             });
+        }
+    }
+
+    private class ViewHolder {
+        private final View collectionItem;
+        private final ImageView image;
+        private final TextView count;
+
+        public ViewHolder(View collectionItem, ImageView image, TextView count) {
+            this.collectionItem = collectionItem;
+            this.image = image;
+            this.count = count;
         }
     }
 }

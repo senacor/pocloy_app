@@ -1,22 +1,22 @@
 package de.senacor.bankathon.pocloy.authentication.dto;
 
 public class RedeemVoucherRequest {
-    private String vocherId;
+    private String voucherTypeId;
     private Credentials credentials;
 
     public RedeemVoucherRequest(){};
 
-    public RedeemVoucherRequest(String vocherId, Credentials credentials) {
-        this.vocherId = vocherId;
+    public RedeemVoucherRequest(String voucherTypeId, Credentials credentials) {
+        this.voucherTypeId = voucherTypeId;
         this.credentials = credentials;
     }
 
-    public String getVocherId() {
-        return vocherId;
+    public String getVoucherTypeId() {
+        return voucherTypeId;
     }
 
-    public void setVocherId(String vocherId) {
-        this.vocherId = vocherId;
+    public void setVoucherTypeId(String voucherTypeId) {
+        this.voucherTypeId = voucherTypeId;
     }
 
     public Credentials getCredentials() {
